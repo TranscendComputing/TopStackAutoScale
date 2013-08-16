@@ -1,0 +1,20 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "SetDesiredCapacityMessage";
+
+message SetDesiredCapacityRequestMessage {
+    required bool typeId = 232;
+
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string autoScalingGroupName = 3;
+    required uint32 desiredCapacity = 4;
+    optional bool   honorCooldown = 5;
+}
+
+message SetDesiredCapacityResultMessage {
+    required bool typeId = 233;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

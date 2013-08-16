@@ -1,0 +1,29 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "UpdateAutoScalingGroupMessage";
+
+message UpdateAutoScalingGroupRequestMessage {
+    required bool typeId = 240;
+
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string autoScalingGroupName = 3;
+    optional string launchConfigurationName = 4;
+    optional uint32 minSize = 5;
+    optional uint32 maxSize = 6;
+    optional uint32 desiredCapacity = 7;
+    optional uint32 defaultCooldown = 8;
+    repeated string availabilityZone = 9;
+    optional string healthCheckType = 10;
+    optional uint32 healthCheckGracePeriod = 11;
+    optional string placementGroup = 12;
+    repeated string terminationPolicy = 13;
+    optional string vPCZoneIdentifier = 14;
+}
+
+message UpdateAutoScalingGroupResultMessage {
+    required bool typeId = 241;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

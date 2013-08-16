@@ -1,0 +1,23 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "PutScalingPolicyMessage";
+
+message PutScalingPolicyRequestMessage {
+    required bool typeId = 226;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string adjustmentType = 3;
+    required string autoScalingGroupName = 4;
+    optional uint32	cooldown = 5;
+    optional uint32 minAdjustmentStep = 6;
+    required string policyName = 7;
+    required uint32 scalingAdjustment = 8;
+}
+
+message PutScalingPolicyResultMessage {
+    required bool typeId = 227;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string policyARN = 3;
+}

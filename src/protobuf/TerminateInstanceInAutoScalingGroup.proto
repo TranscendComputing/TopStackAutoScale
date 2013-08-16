@@ -1,0 +1,32 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "TerminateInstanceInAutoScalingGroupMessage";
+
+message TerminateInstanceInAutoScalingGroupRequestMessage {
+    required bool typeId = 238;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string instanceId = 3;
+    required bool shouldDecrementDesiredCapacity = 4;
+
+}
+
+message TerminateInstanceInAutoScalingGroupResultMessage {
+    required bool typeId = 239;
+    message  Activity {
+    	required string activityId = 1;
+    	required string autoScalingGroupName = 2;
+    	required string cause = 3;
+    	optional string description = 4;
+    	optional string details = 5;
+    	optional string endTime = 6;
+    	optional uint32 progress = 7;
+    	required string startTime = 8;
+    	required string statusCode = 9;
+    	optional string statusMessage = 10;
+    }
+    required string   requestId = 1;
+    required string   callerAccessKey = 2;
+    required Activity activity = 3;
+}

@@ -1,0 +1,51 @@
+# Environment settings for running tests locally in eclipse.
+# This path is only in eclipse configuration, not as part of ant.
+
+#euca:deploy.ip=euca3-devint1
+#essex:deploy.ip=172.31.255.5
+#grizzly:
+deploy.ip=172.31.251.3
+#local:deploy.ip=localhost
+deploy.password=tomcat
+deploy.username=tomcat
+tomcat.dir=/var/lib/tomcat7
+tomcat.dir.lib=/usr/share/tomcat7/lib
+tomcat.dir.bin=/usr/share/tomcat7/bin
+
+#essex:
+ec2.endpoint=http://essexfe.momentumsoftware.com:8773/services/Cloud
+
+# Default zone used for tests
+default.availability.zone=nova
+
+chef.env=production
+
+#essex:
+test.accessKey=buildbot
+#essex:
+test.secretKey=buildbot
+#essex:
+test.account.id=000000000026
+#essex:
+ec2.owner.id=08ca53e1ab774df09fb3be6d7cca170a
+test.limitedQuotaAccessKey=TranscendTest1
+test.limitedQuotaSecretKey=m0mentum3i
+test.limitedQuotaZone=nova
+test.limitedQuotaOwnerId=35b4b20bf2f24fbeabba40d4e24e3a51
+#local:test.accessKey=UJIILZBKSZKEDQTSSURC8
+#local:test.secretKey=QNv0Vh8wOZfypk9xuJeolehZub1gx0c264XFlgvU
+
+#test.accessKey=UZOIR7XKBG7OXF6O4XVWS
+#test.secretKey=XSEXgHz7Rmw3kc3oGfhG1gFSYRQqPamrZJmKntf5
+
+# Another test user (valid on the cloud)
+testuser1.accessKey=testuser1
+testuser1.secretKey=testuser1
+# Another test user (valid on the cloud)
+testuser2.accessKey=testuser2
+testuser2.secretKey=testuser2
+
+flyway.user=msi
+flyway.password=msiIsCool
+flyway.driver=com.mysql.jdbc.Driver
+flyway.url=jdbc:mysql://${deploy.ip}:3306/msi

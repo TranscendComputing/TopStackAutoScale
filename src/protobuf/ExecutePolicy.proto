@@ -1,0 +1,21 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "ExecutePolicyMessage";
+
+message ExecutePolicyRequestMessage {
+    required bool typeId = 224;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    optional string  autoScalingGroupName = 3;
+    optional bool    honorCooldown = 4;
+    required string  policyName = 5;
+
+}
+
+message ExecutePolicyResultMessage {
+    required bool typeId = 225;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

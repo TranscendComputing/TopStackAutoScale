@@ -1,0 +1,19 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DeletePolicyMessage";
+
+message DeletePolicyRequestMessage {
+    required bool typeId = 206;
+    
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    optional string autoScalingGroupName = 3;
+    required string policyName = 4;
+}
+
+message DeletePolicyResultMessage {
+    required bool typeId = 207;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

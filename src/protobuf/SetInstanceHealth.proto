@@ -1,0 +1,20 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "SetInstanceHealthMessage";
+
+message SetInstanceHealthRequestMessage {
+    required bool typeId = 234;
+
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string instanceId = 3;
+    required string healthStatus = 4;
+    optional bool   shouldRespectGracePeriod = 5;
+}
+
+message SetInstanceHealthResultMessage {
+    required bool typeId = 235;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

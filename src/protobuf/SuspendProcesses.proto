@@ -1,0 +1,18 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "SuspendProcessesMessage";
+
+message SuspendProcessesRequestMessage {
+    required bool typeId = 236;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string autoScalingGroupName = 3;
+    repeated string scalingProcesses = 4;
+}
+
+message SuspendProcessesResultMessage {
+    required bool typeId = 237;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

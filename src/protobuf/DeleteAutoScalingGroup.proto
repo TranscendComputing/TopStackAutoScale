@@ -1,0 +1,19 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DeleteAutoScalingGroupMessage";
+
+message DeleteAutoScalingGroupRequestMessage {
+    required bool typeId = 204;
+    
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string autoScalingGroupName = 3;
+    optional bool	forceDelete = 4;
+}
+
+message DeleteAutoScalingGroupResultMessage {
+    required bool typeId = 205;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

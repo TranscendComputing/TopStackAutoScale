@@ -1,0 +1,31 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeAutoScalingInstancesMessage";
+
+message DescribeAutoScalingInstancesRequestMessage {
+    required bool typeId = 212;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    repeated string  instanceIds = 3;
+    optional uint32  maxRecords = 4;
+    optional string  nextToken  = 5;
+}
+
+message DescribeAutoScalingInstancesResultMessage {
+    required bool     typeId = 213; 
+    message  AutoScalingInstanceDetails {
+    	required string autoScalingGroupName = 1;
+    	required string availabilityZone = 2;
+    	required string healthStatus = 3;
+    	required string instanceId = 4;
+    	required string launchConfigurationName = 5;
+    	required string lifecycleState = 6;
+    }
+    required string   requestId = 1;
+    required string   callerAccessKey = 2;
+    repeated AutoScalingInstanceDetails autoScalingInstances = 3;
+    required string   nextToken = 4;
+}
+

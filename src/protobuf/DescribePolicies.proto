@@ -1,0 +1,38 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribePoliciesMessage";
+
+message DescribePoliciesRequestMessage {
+    required bool typeId = 216;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    optional string  autoScalingGroupName = 3;
+    optional uint32	 maxRecords = 4;
+	optional string  nextToken = 5;
+	repeated string  policyNames = 6;
+}
+
+message DescribePoliciesResultMessage {
+    required bool   typeId = 217;
+    message ScalingPolicy {
+    	message Alarm {
+    	optional string  alarmARN = 1;
+    	optional string  alarmName = 2;    	
+    	}
+        optional string  adjustmentType = 1;
+        optional string  value = 2;
+ 		repeated Alarm   alarms = 3;
+ 		optional string  autoScalingGroupName = 4;
+	    optional uint32  cooldown = 5;
+		optional uint32  minAdjustmentStep = 6;
+		optional string  policyARN = 7;		
+		optional string  policyName = 8;
+		optional uint32  scalingAdjustment = 9; 
+    }
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string nextToken = 3;
+    repeated ScalingPolicy scalingPolicies = 4;    
+}

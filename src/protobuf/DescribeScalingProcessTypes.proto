@@ -1,0 +1,18 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeScalingProcessTypesMessage";
+
+message DescribeScalingProcessTypesRequestMessage {
+    required bool typeId = 220;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+}
+
+message DescribeScalingProcessTypesResultMessage {
+    required bool   typeId = 221;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    repeated string processes = 3;
+}

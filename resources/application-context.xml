@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oxm="http://www.springframework.org/schema/oxm"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <bean id="serviceName" class="java.lang.String">
+        <constructor-arg value="autoscale"/>
+    </bean>
+
+    <!-- ==============================     -->
+    <import resource="commonservices-context.xml" />
+    <import resource="scheduler-context.xml"/>
+
+    <bean id="servicesPropertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+                <list>
+                        <value>classpath*:/*.properties</value>
+                        <value>file:${catalina.base}/conf/transcend.properties</value>
+                        <value>classpath*:/autoscale.ports</value>
+                </list>
+        </property>
+    </bean>
+
+    <!-- service definitions for autoscale -->
+    <bean id="CreateAutoScalingGroup"
+        class="com.transcend.autoscale.actions.CreateAutoScalingGroup"/>
+
+    <bean id="CreateAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.CreateAutoScalingGroupWorker"/>
+
+
+    <bean id="CreateLaunchConfiguration"
+        class="com.transcend.autoscale.actions.CreateLaunchConfiguration"/>
+
+      <bean id="CreateLaunchConfigurationWorker"
+        class="com.transcend.autoscale.worker.CreateLaunchConfigurationWorker"/>
+
+    <bean id="DeleteAutoScalingGroup"
+        class="com.transcend.autoscale.actions.DeleteAutoScalingGroup"/>
+
+      <bean id="DeleteAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.DeleteAutoScalingGroupWorker"/>
+
+
+    <bean id="DeletePolicy"
+        class="com.transcend.autoscale.actions.DeletePolicy"/>
+
+      <bean id="DeletePolicyWorker"
+        class="com.transcend.autoscale.worker.DeletePolicyWorker"/>
+
+    <bean id="DescribeAdjustmentTypes"
+        class="com.transcend.autoscale.actions.DescribeAdjustmentTypes"/>
+
+      <bean id="DescribeAdjustmentTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeAdjustmentTypesWorker"/>
+
+    <bean id="DescribeAutoScalingGroups"
+        class="com.transcend.autoscale.actions.DescribeAutoScalingGroups"/>
+
+      <bean id="DescribeAutoScalingGroupsWorker"
+        class="com.transcend.autoscale.worker.DescribeAutoScalingGroupsWorker"/>
+
+
+    <bean id="DescribeAutoScalingInstances"
+        class="com.transcend.autoscale.actions.DescribeAutoScalingInstances"/>
+
+      <bean id="DescribeAutoScalingInstancesWorker"
+        class="com.transcend.autoscale.worker.DescribeAutoScalingInstancesWorker"/>
+
+    <bean id="DescribeLaunchConfigurations"
+        class="com.transcend.autoscale.actions.DescribeLaunchConfigurations"/>
+
+      <bean id="DescribeLaunchConfigurationsWorker"
+        class="com.transcend.autoscale.worker.DescribeLaunchConfigurationsWorker"/>
+
+
+    <bean id="DescribePolicies"
+        class="com.transcend.autoscale.actions.DescribePolicies"/>
+
+    <bean id="DescribePoliciesWorker"
+        class="com.transcend.autoscale.worker.DescribePoliciesWorker"/>
+
+    <bean id="DescribeScalingActivities"
+        class="com.transcend.autoscale.actions.DescribeScalingActivities"/>
+
+    <bean id="DescribeScalingActivitiesWorker"
+        class="com.transcend.autoscale.worker.DescribeScalingActivitiesWorker"/>
+
+    <bean id="DescribeScalingProcessTypes"
+        class="com.transcend.autoscale.actions.DescribeScalingProcessTypes"/>
+
+    <bean id="DescribeScalingProcessTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeScalingProcessTypesWorker"/>
+
+    <bean id="DescribeTerminationPolicyTypes"
+        class="com.transcend.autoscale.actions.DescribeTerminationPolicyTypes"/>
+
+    <bean id="DescribeTerminationPolicyTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeTerminationPolicyTypesWorker"/>
+
+   <bean id="ExecutePolicy"
+        class="com.transcend.autoscale.actions.ExecutePolicy"/>
+
+    <bean id="ExecutePolicyWorker"
+        class="com.transcend.autoscale.worker.ExecutePolicyWorker"/>
+
+    <bean id="PutScalingPolicy"
+        class="com.transcend.autoscale.actions.PutScalingPolicy"/>
+
+    <bean id="PutScalingPolicyWorker"
+        class="com.transcend.autoscale.worker.PutScalingPolicyWorker"/>
+
+    <bean id="PutScheduledUpdateGroupAction"
+        class="com.transcend.autoscale.actions.PutScheduledUpdateGroupAction"/>
+
+    <bean id="PutScheduledUpdateGroupActionWorker"
+        class="com.transcend.autoscale.worker.PutScheduledUpdateGroupActionWorker"/>
+
+    <bean id="ResumeProcesses"
+        class="com.transcend.autoscale.actions.ResumeProcesses"/>
+
+    <bean id="ResumeProcessesWorker"
+        class="com.transcend.autoscale.worker.ResumeProcessesWorker"/>
+
+    <bean id="SetDesiredCapacity"
+        class="com.transcend.autoscale.actions.SetDesiredCapacity"/>
+
+    <bean id="SetDesiredCapacityWorker"
+        class="com.transcend.autoscale.worker.SetDesiredCapacityWorker"/>
+
+    <bean id="SetInstanceHealth"
+        class="com.transcend.autoscale.actions.SetInstanceHealth"/>
+
+    <bean id="SetInstanceHealthWorker"
+        class="com.transcend.autoscale.worker.SetInstanceHealthWorker"/>
+
+    <bean id="SuspendProcesses"
+        class="com.transcend.autoscale.actions.SuspendProcesses"/>
+
+    <bean id="SuspendProcessesWorker"
+        class="com.transcend.autoscale.worker.SuspendProcessesWorker"/>
+
+    <bean id="TerminateInstanceInAutoScalingGroup"
+        class="com.transcend.autoscale.actions.TerminateInstanceInAutoScalingGroup"/>
+
+    <bean id="TerminateInstanceInAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.TerminateInstanceInAutoScalingGroupWorker"/>
+
+
+    <bean id="UpdateAutoScalingGroup"
+        class="com.transcend.autoscale.actions.UpdateAutoScalingGroup"/>
+
+    <bean id="UpdateAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.UpdateAutoScalingGroupWorker"/>
+
+    <bean id="autoscaleServiceAsync"
+        class="com.msi.tough.query.AsyncServiceImpl">
+        <constructor-arg>
+            <map>
+                <entry key="CreateAutoScalingGroup" value-ref="CreateAutoScalingGroup"/>
+                <entry key="CreateLaunchConfiguration" value-ref="CreateLaunchConfiguration"/>
+                <entry key="DeleteAutoScalingGroup" value-ref="DeleteAutoScalingGroup"/>
+                <entry key="DeletePolicy" value-ref="DeletePolicy"/>
+                <entry key="DescribeAdjustmentTypes" value-ref="DescribeAdjustmentTypes"/>
+                <entry key="DescribeAutoScalingGroups" value-ref="DescribeAutoScalingGroups"/>
+                <entry key="DescribeAutoScalingInstances" value-ref="DescribeAutoScalingInstances"/>
+                <entry key="DescribeLaunchConfigurations" value-ref="DescribeLaunchConfigurations"/>
+                <entry key="DescribePolicies" value-ref="DescribePolicies"/>
+                <entry key="DescribeScalingActivities" value-ref="DescribeScalingActivities"/>
+                <entry key="DescribeScalingProcessTypes" value-ref="DescribeScalingProcessTypes"/>
+                <entry key="DescribeTerminationPolicyTypes" value-ref="DescribeTerminationPolicyTypes"/>
+                <entry key="ExecutePolicy" value-ref="ExecutePolicy"/>
+                <entry key="PutScalingPolicy" value-ref="PutScalingPolicy"/>
+                <entry key="PutScheduledUpdateGroupAction" value-ref="PutScheduledUpdateGroupAction"/>
+                <entry key="ResumeProcesses" value-ref="ResumeProcesses"/>
+                <entry key="SetDesiredCapacity" value-ref="SetDesiredCapacity"/>
+                <entry key="SetInstanceHealth" value-ref="SetInstanceHealth"/>
+                <entry key="SuspendProcesses" value-ref="SuspendProcesses"/>
+                <entry key="TerminateInstanceInAutoScalingGroup" value-ref="TerminateInstanceInAutoScalingGroup"/>
+                <entry key="UpdateAutoScalingGroup" value-ref="UpdateAutoScalingGroup"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="autoscaleQuery" class="com.msi.tough.query.autoscale.AutoScaleQueryImpl">
+        <constructor-arg>
+            <map>
+
+                <entry key="DeleteAutoScalingGroup">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DeleteAutoScalingGroup">
+                    </bean>
+                </entry>
+                <entry key="DeleteLaunchConfiguration">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DeleteLaunchConfiguration">
+                    </bean>
+                </entry>
+                <entry key="DeletePolicy">
+                    <bean class="com.msi.tough.query.autoscale.actions.DeletePolicy">
+                    </bean>
+                </entry>
+                <entry key="DeleteScheduledAction">
+                    <bean class="com.msi.tough.query.autoscale.actions.DeleteScheduledAction">
+                    </bean>
+                </entry>
+                <entry key="DescribeAdjustmentTypes">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeAdjustmentTypes">
+                    </bean>
+                </entry>
+                <entry key="DescribeAutoScalingGroups">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeAutoScalingGroups">
+                    </bean>
+                </entry>
+                <entry key="DescribeAutoScalingInstances">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeAutoScalingInstances">
+                    </bean>
+                </entry>
+                <entry key="DescribeLaunchConfigurations">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeLaunchConfigurations">
+                    </bean>
+                </entry>
+                <entry key="DescribePolicies">
+                    <bean class="com.msi.tough.query.autoscale.actions.DescribePolicies">
+                    </bean>
+                </entry>
+                <entry key="DescribeScalingActivities">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeScalingActivities">
+                    </bean>
+                </entry>
+                <entry key="DescribeScalingProcessTypes">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeScalingProcessTypes">
+                    </bean>
+                </entry>
+                <entry key="DescribeScheduledActions">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeScheduledActions">
+                    </bean>
+                </entry>
+                <entry key="DescribeTerminationPolicyTypes">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.DescribeTerminationPolicyTypes">
+                    </bean>
+                </entry>
+                <entry key="ExecutePolicy">
+                    <bean class="com.msi.tough.query.autoscale.actions.ExecutePolicy">
+                    </bean>
+                </entry>
+                <entry key="PutScalingPolicy">
+                    <bean class="com.msi.tough.query.autoscale.actions.PutScalingPolicy">
+                    </bean>
+                </entry>
+                <entry key="PutScheduledUpdateGroupAction">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.PutScheduledUpdateGroupAction">
+                    </bean>
+                </entry>
+                <entry key="ResumeProcesses">
+                    <bean class="com.msi.tough.query.autoscale.actions.ResumeProcesses">
+                    </bean>
+                </entry>
+                <entry key="SetDesiredCapacity">
+                    <bean class="com.msi.tough.query.autoscale.actions.SetDesiredCapacity">
+                    </bean>
+                </entry>
+                <entry key="SetInstanceHealth">
+                    <bean class="com.msi.tough.query.autoscale.actions.SetInstanceHealth">
+                    </bean>
+                </entry>
+                <entry key="SuspendProcesses">
+                    <bean class="com.msi.tough.query.autoscale.actions.SuspendProcesses">
+                    </bean>
+                </entry>
+                <entry key="TerminateInstanceInAutoScalingGroup">
+                    <bean
+                        class="com.msi.tough.query.autoscale.actions.TerminateInstanceInAutoScalingGroup">
+                    </bean>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="endpoint" class="java.lang.String">
+        <constructor-arg value="ActionIn"/>
+    </bean>
+    <bean id="rawEndpoint" class="java.lang.String">
+        <constructor-arg value="DirectToZMQEntry"/>
+    </bean>
+
+    <bean id="workflow" factory-method="getInstance"
+    class="com.msi.tough.workflow.core.MuleWorkflow">
+    </bean>
+
+    <bean id="actionHelper" class="com.msi.tough.query.ActionHelper">
+    </bean>
+
+    <!-- Run common annotations; e.g. PostConstruct/PreDestroy. -->
+    <context:annotation-config />
+
+    <bean id="schedulerInit" class="com.msi.tough.scheduler.SchedulerInit">
+        <property name="enabled" value="${scheduler.enabled}" />
+    </bean>
+
+    <bean id="appctx" factory-method="getInstanceForInjection"
+        class="com.msi.tough.core.Appctx">
+        <property name="configuration" ref="configuration"/>
+    </bean>
+
+    <bean class="com.msi.tough.core.AppctxInjector"/>
+
+    <bean id="hibernateUtil" class="com.msi.tough.core.HibernateUtil">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <!-- Redefine session factory; this app uses annotations for transactions -->
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="msiDS" />
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"></property>
+        <property name="hibernateProperties">
+            <value>hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+                hibernate.cache.provider_class=org.hibernate.cache.NoCacheProvider
+                hibernate.show_sql=false
+                hibernate.hbm2ddl.auto=update
+            </value>
+        </property>
+    </bean>
+
+    <!-- Scheduler jobs -->
+    <!-- Specify a JobDetailBean and SimpleTriggerBean for each job needed, and pass in the Trigger bean to the jobs list.
+    Examples can be found in Monitor's application-context.xml-->
+    <bean id="jobs" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="ProcessAutoScalingTrigger" />
+                <ref bean="GatherASTrigger" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="ProcessAutoScalingJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.msi.tough.scheduler.http.HttpService" />
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="url" value="http://SRVHOST:8080/ASInternal" />
+                <entry key="parameters" value="Action=ProcessAutoScaling" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="ProcessAutoScalingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="ProcessAutoScalingJob" />
+        <property name="startDelay" value="1000" />
+        <property name="repeatInterval" value="60000" />
+    </bean>
+
+    <bean id="GatherASJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.msi.tough.scheduler.http.HttpService" />
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="url" value="http://SRVHOST:8080/Monitor" />
+                <entry key="parameters" value="Action=GatherAS" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="GatherASTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="GatherASJob" />
+        <property name="startDelay" value="1000" />
+        <property name="repeatInterval" value="60000" />
+    </bean>
+</beans>

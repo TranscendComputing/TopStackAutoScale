@@ -1,0 +1,26 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "PutScheduledUpdateGroupActionMessage";
+
+message PutScheduledUpdateGroupActionRequestMessage {
+    required bool typeId = 228;
+
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string autoScalingGroupName = 3;
+    optional uint32 desiredCapacity = 4;
+    optional string endTime = 5;
+    optional uint32 maxSize = 6;
+    optional uint32 minSize = 7;
+    optional string recurrence = 8;
+    required string scheduledActionName = 9;
+    optional string startTime = 10;
+    optional string time = 11;
+}
+
+message PutScheduledUpdateGroupActionResultMessage {
+    required bool typeId = 229;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

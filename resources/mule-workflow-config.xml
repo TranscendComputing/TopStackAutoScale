@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:zmq="http://www.mulesoft.org/schema/mule/zeromq"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:protobuf="http://www.mulesoft.org/schema/mule/protobuf"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xsi:schemaLocation="http://wPutww.springframework.org/schema/beans
+      classpath:org/springframework/beans/factory/xml/spring-beans-3.0.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/zeromq http://www.mulesoft.org/schema/mule/zeromq/1.1-SNAPSHOT/mule-zeromq.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/protobuf http://www.mulesoft.org/schema/mule/protobuf/current/mule-protobuf.xsd
+        http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+    <description>
+    This configuration uses REST services and ZeroMQ endpoints to receive
+    requests.
+    </description>
+
+    <configuration>
+    <default-threading-profile maxThreadsActive="3"/>
+    </configuration>
+
+    <custom-transformer name="ExceptionToString" class="com.msi.tough.workflow.core.ExceptionToString"/>
+    <custom-transformer name="ExceptionToErrorResponse" class="com.msi.tough.workflow.core.ExceptionToErrorResponse"/>
+    <custom-transformer name="HttpRequestToParameter" class="org.mule.transport.servlet.transformers.HttpRequestToParameter"/>
+    <custom-transformer name="ObjectToString" class="org.mule.transformer.simple.ObjectToString"/>
+
+    <spring:bean id="muleWorkflow" factory-method="getInstance"
+    class="com.msi.tough.workflow.core.MuleWorkflow">
+    </spring:bean>
+
+    <zmq:connector name="ZMQ"/>
+
+    <!-- Begin zero MQ versions -->
+
+    <flow name="DirectToZMQ">
+        <inbound-endpoint ref="DirectToZMQIn"/>
+        <zmq:outbound-endpoint address="tcp://*:${autoscale.port}" socket-operation="connect" exchange-pattern="push"/>
+    </flow>
+
+    <flow name="ZMQEntry">
+        <zmq:inbound-endpoint address="tcp://*:${autoscale.port}" socket-operation="bind" exchange-pattern="pull"/>
+        <first-successful>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateAutoScalingGroupMessage$CreateAutoScalingGroupRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateLaunchConfigurationMessage$CreateLaunchConfigurationRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DeleteAutoScalingGroupMessage$DeleteAutoScalingGroupRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DeletePolicyMessage$DeletePolicyRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeAdjustmentTypesMessage$DescribeAdjustmentTypesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeAutoScalingGroupsMessage$DescribeAutoScalingGroupsRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeAutoScalingInstancesMessage$DescribeAutoScalingInstancesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage$DescribeLaunchConfigurationsRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribePoliciesMessage$DescribePoliciesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeScalingActivitiesMessage$DescribeScalingActivitiesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeScalingProcessTypesMessage$DescribeScalingProcessTypesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeTerminationPolicyTypesMessage$DescribeTerminationPolicyTypesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.ExecutePolicyMessage$ExecutePolicyRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.PutScalingPolicyMessage$PutScalingPolicyRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.PutScheduledUpdateGroupActionMessage$PutScheduledUpdateGroupActionRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.ResumeProcessesMessage$ResumeProcessesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.SetDesiredCapacityMessage$SetDesiredCapacityRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.SetInstanceHealthMessage$SetInstanceHealthRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.SuspendProcessesMessage$SuspendProcessesRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.TerminateInstanceInAutoScalingGroupMessage$TerminateInstanceInAutoScalingGroupRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.UpdateAutoScalingGroupMessage$UpdateAutoScalingGroupRequestMessage"/>
+            
+        </first-successful>
+        <log-component />
+        <flow-ref name="ActionEntry"/>
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="ActionEntry">
+        <inbound-endpoint ref="ActionIn"/>
+        <log-component />
+        <choice>
+            <when expression="payload instanceof com.transcend.autoscale.message.CreateAutoScalingGroupMessage$CreateAutoScalingGroupRequestMessage" evaluator="groovy">
+                <flow-ref name="CreateAutoScalingGroupRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.CreateLaunchConfigurationMessage$CreateLaunchConfigurationRequestMessage" evaluator="groovy">
+                <flow-ref name="CreateLaunchConfigurationRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DeleteAutoScalingGroupMessage$DeleteAutoScalingGroupRequestMessage" evaluator="groovy">
+                <flow-ref name="DeleteAutoScalingGroupRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DeletePolicyMessage$DeletePolicyRequestMessage" evaluator="groovy">
+                <flow-ref name="DeletePolicyRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeAdjustmentTypesMessage$DescribeAdjustmentTypesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeAdjustmentTypesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeAutoScalingGroupsMessage$DescribeAutoScalingGroupsRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeAutoScalingGroupsRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeAutoScalingInstancesMessage$DescribeAutoScalingInstancesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeAutoScalingInstancesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage$DescribeLaunchConfigurationsRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeLaunchConfigurationsRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribePoliciesMessage$DescribePoliciesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribePoliciesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeScalingActivitiesMessage$DescribeScalingActivitiesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeScalingActivitiesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeScalingProcessTypesMessage$DescribeScalingProcessTypesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeScalingProcessTypesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DescribeTerminationPolicyTypesMessage$DescribeTerminationPolicyTypesRequestMessage" evaluator="groovy">
+                <flow-ref name="DescribeTerminationPolicyTypesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.ExecutePolicyMessage$ExecutePolicyRequestMessage" evaluator="groovy">
+                <flow-ref name="ExecutePolicyRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.PutScalingPolicyMessage$PutScalingPolicyRequestMessage" evaluator="groovy">
+                <flow-ref name="PutScalingPolicyRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.PutScheduledUpdateGroupActionMessage$PutScheduledUpdateGroupActionRequestMessage" evaluator="groovy">
+                <flow-ref name="PutScheduledUpdateGroupActionRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.ResumeProcessesMessage$ResumeProcessesRequestMessage" evaluator="groovy">
+                <flow-ref name="ResumeProcessesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.SetDesiredCapacityMessage$SetDesiredCapacityRequestMessage" evaluator="groovy">
+                <flow-ref name="SetDesiredCapacityRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.SetInstanceHealthMessage$SetInstanceHealthRequestMessage" evaluator="groovy">
+                <flow-ref name="SetInstanceHealthRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.SuspendProcessesMessage$SuspendProcessesRequestMessage" evaluator="groovy">
+                <flow-ref name="SuspendProcessesRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.TerminateInstanceInAutoScalingGroupMessage$TerminateInstanceInAutoScalingGroupRequestMessage" evaluator="groovy">
+                <flow-ref name="TerminateInstanceInAutoScalingGroupRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.UpdateAutoScalingGroupMessage$UpdateAutoScalingGroupRequestMessage" evaluator="groovy">
+                <flow-ref name="UpdateAutoScalingGroupRequest"/>
+            </when>
+            <otherwise>
+                <flow-ref name="SystemErrorHandler"/>
+            </otherwise>
+        </choice>
+    </flow>
+
+    <!-- Request/Response flow for CreateAutoScalingGroup -->
+
+    <flow name="CreateAutoScalingGroupRequest">
+        <component>
+            <spring-object bean="CreateAutoScalingGroupWorker"/>
+        </component>
+
+        <flow-ref name="CreateAutoScalingGroupResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="CreateAutoScalingGroupResponse" >
+        <component>
+            <spring-object bean="CreateAutoScalingGroup"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+     <!-- Request/Response flow for CreateLaunchConfiguration -->
+     <flow name="CreateLaunchConfigurationRequest">
+        <component>
+            <spring-object bean="CreateLaunchConfigurationWorker"/>
+        </component>
+
+        <flow-ref name="CreateLaunchConfigurationResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="CreateLaunchConfigurationResponse" >
+        <component>
+            <spring-object bean="CreateLaunchConfiguration"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+     <!-- Request/Response flow for DeleteAutoScalingGroup -->
+     <flow name="DeleteAutoScalingGroupRequest">
+        <component>
+            <spring-object bean="DeleteAutoScalingGroupWorker"/>
+        </component>
+
+        <flow-ref name="DeleteAutoScalingGroupResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DeleteAutoScalingGroupResponse" >
+        <component>
+            <spring-object bean="DeleteAutoScalingGroup"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+     <!-- Request/Response flow for DeletePolicy -->
+     <flow name="DeletePolicyRequest">
+        <component>
+            <spring-object bean="DeletePolicyWorker"/>
+        </component>
+
+        <flow-ref name="DeletePolicyResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DeletePolicyResponse" >
+        <component>
+            <spring-object bean="DeletePolicy"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+   <!-- Request/Response flow for DescribeAdjustmentTypes -->
+     <flow name="DescribeAdjustmentTypesRequest">
+        <component>
+            <spring-object bean="DescribeAdjustmentTypesWorker"/>
+        </component>
+
+        <flow-ref name="DescribeAdjustmentTypesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DescribeAdjustmentTypesResponse" >
+        <component>
+            <spring-object bean="DescribeAdjustmentTypes"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <!-- Request/Response flow for DescribeAutoScalingGroups -->
+     <flow name="DescribeAutoScalingGroupsRequest">
+        <component>
+            <spring-object bean="DescribeAutoScalingGroupsWorker"/>
+        </component>
+
+        <flow-ref name="DescribeAutoScalingGroupsResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DescribeAutoScalingGroupsResponse" >
+        <component>
+            <spring-object bean="DescribeAutoScalingGroups"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+
+   
+    <!-- Request/Response flow for DescribeAutoScalingInstances -->
+     <flow name="DescribeAutoScalingInstancesRequest">
+        <component>
+            <spring-object bean="DescribeAutoScalingInstancesWorker"/>
+        </component>
+
+        <flow-ref name="DescribeAutoScalingInstancesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DescribeAutoScalingInstancesResponse" >
+        <component>
+            <spring-object bean="DescribeAutoScalingInstances"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+    
+   <!-- Request/Response flow for DescribeLaunchConfigurations -->
+     <flow name="DescribeLaunchConfigurationsRequest">
+        <component>
+            <spring-object bean="DescribeLaunchConfigurationsWorker"/>
+        </component>
+
+        <flow-ref name="DescribeLaunchConfigurationsResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+     
+     <flow name="DescribeLaunchConfigurationsResponse" >
+        <component>
+            <spring-object bean="DescribeLaunchConfigurations"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+
+   <!-- Request/Response flow for DescribePolicies -->
+
+    <flow name="DescribePoliciesRequest">
+        <component>
+            <spring-object bean="DescribePoliciesWorker"/>
+        </component>
+
+        <flow-ref name="DescribePoliciesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="DescribePoliciesResponse" >
+        <component>
+            <spring-object bean="DescribePolicies"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+   <!-- Request/Response flow for DescribeScalingActivities -->
+
+    <flow name="DescribeScalingActivitiesRequest">
+        <component>
+            <spring-object bean="DescribeScalingActivitiesWorker"/>
+        </component>
+
+        <flow-ref name="DescribeScalingActivitiesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="DescribeScalingActivitiesResponse" >
+        <component>
+            <spring-object bean="DescribeScalingActivities"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+    
+   <!-- Request/Response flow for DescribeScalingProcessTypes -->
+
+    <flow name="DescribeScalingProcessTypesRequest">
+        <component>
+            <spring-object bean="DescribeScalingProcessTypesWorker"/>
+        </component>
+
+        <flow-ref name="DescribeScalingProcessTypesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="DescribeScalingProcessTypesResponse" >
+        <component>
+            <spring-object bean="DescribeScalingProcessTypes"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+   <!-- Request/Response flow for DescribeTerminationPolicyTypes -->
+
+    <flow name="DescribeTerminationPolicyTypesRequest">
+        <component>
+            <spring-object bean="DescribeTerminationPolicyTypesWorker"/>
+        </component>
+
+        <flow-ref name="DescribeTerminationPolicyTypesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="DescribeTerminationPolicyTypesResponse" >
+        <component>
+            <spring-object bean="DescribeTerminationPolicyTypes"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <!-- Request/Response flow for ExecutePolicy -->
+
+    <flow name="ExecutePolicyRequest">
+        <component>
+            <spring-object bean="ExecutePolicyWorker"/>
+        </component>
+
+        <flow-ref name="ExecutePolicyResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="ExecutePolicyResponse" >
+        <component>
+            <spring-object bean="ExecutePolicy"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <!-- Request/Response flow for PutScalingPolicy -->
+
+    <flow name="PutScalingPolicyRequest">
+        <component>
+            <spring-object bean="PutScalingPolicyWorker"/>
+        </component>
+
+        <flow-ref name="PutScalingPolicyResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="PutScalingPolicyResponse" >
+        <component>
+            <spring-object bean="PutScalingPolicy"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+   <!-- Request/Response flow for PutScheduledUpdateGroupAction -->
+
+    <flow name="PutScheduledUpdateGroupActionRequest">
+        <component>
+            <spring-object bean="PutScheduledUpdateGroupActionWorker"/>
+        </component>
+
+        <flow-ref name="PutScheduledUpdateGroupActionResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="PutScheduledUpdateGroupActionResponse" >
+        <component>
+            <spring-object bean="PutScheduledUpdateGroupAction"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    
+   <!-- Request/Response flow for ResumeProcesses -->
+
+    <flow name="ResumeProcessesRequest">
+        <component>
+            <spring-object bean="ResumeProcessesWorker"/>
+        </component>
+
+        <flow-ref name="ResumeProcessesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="ResumeProcessesResponse" >
+        <component>
+            <spring-object bean="ResumeProcesses"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+<!-- Request/Response flow for SetDesiredCapacity -->
+
+    <flow name="SetDesiredCapacityRequest">
+        <component>
+            <spring-object bean="SetDesiredCapacityWorker"/>
+        </component>
+
+        <flow-ref name="SetDesiredCapacityResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="SetDesiredCapacityResponse" >
+        <component>
+            <spring-object bean="SetDesiredCapacity"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+   <!-- Request/Response flow for SetInstanceHealth -->
+
+    <flow name="SetInstanceHealthRequest">
+        <component>
+            <spring-object bean="SetInstanceHealthWorker"/>
+        </component>
+
+        <flow-ref name="SetInstanceHealthResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="SetInstanceHealthResponse" >
+        <component>
+            <spring-object bean="SetInstanceHealth"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <!-- Request/Response flow for SuspendProcesses -->
+
+    <flow name="SuspendProcessesRequest">
+        <component>
+            <spring-object bean="SuspendProcessesWorker"/>
+        </component>
+
+        <flow-ref name="SuspendProcessesResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="SuspendProcessesResponse" >
+        <component>
+            <spring-object bean="SuspendProcesses"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <!-- Request/Response flow for UpdateAutoScalingGroup -->
+
+    <flow name="UpdateAutoScalingGroupRequest">
+        <component>
+            <spring-object bean="UpdateAutoScalingGroupWorker"/>
+        </component>
+
+        <flow-ref name="UpdateAutoScalingGroupResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="UpdateAutoScalingGroupResponse" >
+        <component>
+            <spring-object bean="UpdateAutoScalingGroup"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <!-- Request/Response flow for TerminateInstanceInAutoScalingGroup -->
+
+    <flow name="TerminateInstanceInAutoScalingGroupRequest">
+        <component>
+            <spring-object bean="TerminateInstanceInAutoScalingGroupWorker"/>
+        </component>
+
+        <flow-ref name="TerminateInstanceInAutoScalingGroupResponse"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="TerminateInstanceInAutoScalingGroupResponse" >
+        <component>
+            <spring-object bean="TerminateInstanceInAutoScalingGroup"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <!-- Route unexpected errors to separate error handler -->
+        <catch-exception-strategy>
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <!-- General system flows -->
+
+    <flow name="ClientResponder">
+        <component>
+            <spring-object bean="autoscaleServiceAsync"/>
+        </component>
+    </flow>
+
+    <model>
+        <service name="UserErrorHandler">
+            <inbound>
+                <vm:inbound-endpoint path="userErrorHandler" responseTransformer-refs="ExceptionToString" exchange-pattern="request-response"/>
+            </inbound>
+        </service>
+    </model>
+
+    <!-- Handle any unexpected errors. Errors could also be routed elsewhere,
+        e.g. into an error file, send via email to a list, stored in a database, etc. -->
+    <flow name="SystemErrorHandler">
+        <inbound-endpoint ref="SystemErrorHandlerIn"/>
+
+        <flow-ref name="ClientResponder"/>
+    </flow>
+
+</mule>

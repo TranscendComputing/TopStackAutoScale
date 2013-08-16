@@ -1,0 +1,18 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeAdjustmentTypesMessage";
+
+message DescribeAdjustmentTypesRequestMessage {
+    required bool typeId = 208;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+}
+
+message DescribeAdjustmentTypesResultMessage {
+    required bool   typeId = 209;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    repeated string adjustmentTypes = 3;
+}

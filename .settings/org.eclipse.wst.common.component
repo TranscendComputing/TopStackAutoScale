@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="AutoScaleQuery">
+        <wb-resource deploy-path="/" source-path="/WebContent"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/eclipse"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/resources"/>
+        <dependent-module archiveName="ToughCore.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ToughCore/ToughCore">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dasein-cloud-openstack.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/dasein-cloud-openstack/dasein-cloud-openstack">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dasein-cloud-test.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/dasein-cloud-test/dasein-cloud-test">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dasein-cloud-aws.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/dasein-cloud-aws/dasein-cloud-aws">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dasein-cloud-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/dasein-cloud-core/dasein-cloud-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="AutoScaleQuery"/>
+        <property name="java-output-path" value="/AutoScaleQuery/build/classes"/>
+    </wb-module>
+</project-modules>

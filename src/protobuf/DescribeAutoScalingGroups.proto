@@ -1,0 +1,72 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeAutoScalingGroupsMessage";
+
+message DescribeAutoScalingGroupsRequestMessage {
+    required bool typeId = 210;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    repeated string  autoScalingGroupNames = 3;
+    optional uint32  maxRecords = 4;
+    optional string  nextToken  = 5;
+}
+
+
+message DescribeAutoScalingGroupsResultMessage {
+    required bool     typeId = 211; 
+    message EnabledMetric {
+        optional string granularity = 1;
+        optional string metric = 2;
+    }
+    
+    message Instance {
+    	required string availabilityZone = 1;
+    	required string healthStatus = 2;
+    	required string instanceId = 3;
+    	required string launchConfigurationName = 4;
+    	required string lifecycleState = 5;
+    }
+    
+    message SuspendProcess {
+        optional string processName = 1;
+        optional string suspensionReason = 2;
+    }
+    
+    message TagDescription {
+		optional string key = 1;
+		optional bool	propagateAtLaunch = 2;
+		optional string resourceId = 3;
+		optional string resourceType = 4;
+		optional string value = 5;
+    }
+
+    message  AutoScalingGroup {
+    	optional string 		autoScalingGroupARN = 1;
+    	required string 		autoScalingGroupName = 2;
+    	repeated string 		availabilityZones = 3;
+    	required string 		createdTime = 4;
+    	required uint32			defaultCooldown = 5;
+    	required uint32 		desiredCapacity = 6;
+    	repeated EnabledMetric 	enabledMetrics = 7;
+    	optional uint32			healthCheckGracePeriod = 8;
+    	required string			healthCheckType = 9;
+    	repeated Instance		instances = 10;
+    	required string			launchConfigurationName = 11;
+    	repeated string			loadBalancerNames = 12;
+    	required uint32			maxSize = 13;
+    	required uint32			minSize = 14;
+    	optional string			placementGroup = 15;
+    	optional string			status = 16;
+    	repeated SuspendProcess suspendProcesses = 17;
+    	repeated TagDescription	tags = 18;
+    	repeated string			terminationPolicies = 19;
+    	optional string			vpcZoneIdentifier = 20;
+    }
+    required string   requestId = 1;
+    required string   callerAccessKey = 2;
+    repeated AutoScalingGroup autoScalingGroups = 3;
+    required string   nextToken = 4;
+}
+

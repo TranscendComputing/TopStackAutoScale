@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:oxm="http://www.springframework.org/schema/oxm"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd" >
+
+    <import resource="cloud-config.xml" />
+    <!-- inject autoscale util classes (helpers, etc.) -->
+    <context:component-scan base-package="com.msi.tough.query.autoscale" />
+    <!-- inject core action classes (ActionTestHelper, etc.) -->
+    <context:component-scan base-package="com.msi.tough.query" />
+    <!-- inject project action classes (Describe, etc.) -->
+    <context:component-scan base-package="com.transcend.autoscale" />
+
+    <!-- service definitions for autoscale -->
+    <bean id="CreateAutoScalingGroup"
+        class="com.transcend.autoscale.actions.CreateAutoScalingGroup"/>
+
+    <bean id="CreateAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.CreateAutoScalingGroupWorker"/>
+
+    <bean id="CreateLaunchConfiguration"
+        class="com.transcend.autoscale.actions.CreateLaunchConfiguration"/>
+
+    <bean id="CreateLaunchConfigurationWorker"
+        class="com.transcend.autoscale.worker.CreateLaunchConfigurationWorker"/>
+
+    <bean id="DeleteAutoScalingGroup"
+        class="com.transcend.autoscale.actions.DeleteAutoScalingGroup"/>
+
+    <bean id="DeleteAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.DeleteAutoScalingGroupWorker"/>
+
+    <bean id="DeletePolicy"
+        class="com.transcend.autoscale.actions.DeletePolicy"/>
+
+    <bean id="DeletePolicyWorker"
+        class="com.transcend.autoscale.worker.DeletePolicyWorker"/>
+
+    <bean id="DescribeAdjustmentTypes"
+        class="com.transcend.autoscale.actions.DescribeAdjustmentTypes"/>
+
+    <bean id="DescribeAdjustmentTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeAdjustmentTypesWorker"/>
+
+    <bean id="DescribeAutoScalingGroups"
+        class="com.transcend.autoscale.actions.DescribeAutoScalingGroups"/>
+
+    <bean id="DescribeAutoScalingGroupsWorker"
+        class="com.transcend.autoscale.worker.DescribeAutoScalingGroupsWorker"/>
+
+
+    <bean id="DescribeAutoScalingInstances"
+        class="com.transcend.autoscale.actions.DescribeAutoScalingInstances"/>
+
+    <bean id="DescribeAutoScalingInstancesWorker"
+        class="com.transcend.autoscale.worker.DescribeAutoScalingInstancesWorker"/>
+
+    <bean id="DescribeLaunchConfigurations"
+        class="com.transcend.autoscale.actions.DescribeLaunchConfigurations"/>
+
+    <bean id="DescribeLaunchConfigurationsWorker"
+        class="com.transcend.autoscale.worker.DescribeLaunchConfigurationsWorker"/>
+
+
+	<bean id="DescribePolicies"
+        class="com.transcend.autoscale.actions.DescribePolicies"/>
+
+    <bean id="DescribePoliciesWorker"
+        class="com.transcend.autoscale.worker.DescribePoliciesWorker"/>
+
+    <bean id="DescribeScalingActivities"
+        class="com.transcend.autoscale.actions.DescribeScalingActivities"/>
+
+    <bean id="DescribeScalingActivitiesWorker"
+        class="com.transcend.autoscale.worker.DescribeScalingActivitiesWorker"/>
+
+    <bean id="DescribeScalingProcessTypes"
+        class="com.transcend.autoscale.actions.DescribeScalingProcessTypes"/>
+
+    <bean id="DescribeScalingProcessTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeScalingProcessTypesWorker"/>
+
+    <bean id="DescribeTerminationPolicyTypes"
+        class="com.transcend.autoscale.actions.DescribeTerminationPolicyTypes"/>
+
+    <bean id="DescribeTerminationPolicyTypesWorker"
+        class="com.transcend.autoscale.worker.DescribeTerminationPolicyTypesWorker"/>
+
+    <bean id="ExecutePolicy"
+        class="com.transcend.autoscale.actions.ExecutePolicy"/>
+
+    <bean id="ExecutePolicyWorker"
+        class="com.transcend.autoscale.worker.ExecutePolicyWorker"/>
+
+    <bean id="PutScalingPolicy"
+        class="com.transcend.autoscale.actions.PutScalingPolicy"/>
+
+    <bean id="PutScalingPolicyWorker"
+        class="com.transcend.autoscale.worker.PutScalingPolicyWorker"/>
+
+    <bean id="PutScheduledUpdateGroupAction"
+        class="com.transcend.autoscale.actions.PutScheduledUpdateGroupAction"/>
+
+    <bean id="PutScheduledUpdateGroupActionWorker"
+        class="com.transcend.autoscale.worker.PutScheduledUpdateGroupActionWorker"/>
+
+    <bean id="ResumeProcesses"
+        class="com.transcend.autoscale.actions.ResumeProcesses"/>
+
+    <bean id="ResumeProcessesWorker"
+        class="com.transcend.autoscale.worker.ResumeProcessesWorker"/>
+
+    <bean id="SetDesiredCapacity"
+        class="com.transcend.autoscale.actions.SetDesiredCapacity"/>
+
+    <bean id="SetDesiredCapacityWorker"
+        class="com.transcend.autoscale.worker.SetDesiredCapacityWorker"/>
+
+    <bean id="SetInstanceHealth"
+        class="com.transcend.autoscale.actions.SetInstanceHealth"/>
+
+    <bean id="SetInstanceHealthWorker"
+        class="com.transcend.autoscale.worker.SetInstanceHealthWorker"/>
+
+    <bean id="SuspendProcesses"
+        class="com.transcend.autoscale.actions.SuspendProcesses"/>
+
+    <bean id="SuspendProcessesWorker"
+        class="com.transcend.autoscale.worker.SuspendProcessesWorker"/>
+
+    <bean id="TerminateInstanceInAutoScalingGroup"
+        class="com.transcend.autoscale.actions.TerminateInstanceInAutoScalingGroup"/>
+
+    <bean id="TerminateInstanceInAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.TerminateInstanceInAutoScalingGroupWorker"/>
+
+    <bean id="UpdateAutoScalingGroup"
+        class="com.transcend.autoscale.actions.UpdateAutoScalingGroup"/>
+
+    <bean id="UpdateAutoScalingGroupWorker"
+        class="com.transcend.autoscale.worker.UpdateAutoScalingGroupWorker"/>
+
+
+    <bean id="autoscaleServiceAsync"
+        class="com.msi.tough.query.AsyncServiceImpl">
+        <constructor-arg>
+            <map>
+                <entry key="CreateAutoScalingGroup" value-ref="CreateAutoScalingGroup"/>
+                <entry key="CreateLaunchConfiguration" value-ref="CreateLaunchConfiguration"/>
+                <entry key="DeleteAutoScalingGroup" value-ref="DeleteAutoScalingGroup"/>
+                <entry key="DeletePolicy" value-ref="DeletePolicy"/>
+                <entry key="DescribeAdjustmentTypes" value-ref="DescribeAdjustmentTypes"/>
+                <entry key="DescribeAutoScalingGroups" value-ref="DescribeAutoScalingGroups"/>
+                <entry key="DescribeAutoScalingInstances" value-ref="DescribeAutoScalingInstances"/>
+                <entry key="DescribeLaunchConfigurations" value-ref="DescribeLaunchConfigurations"/>
+                <entry key="DescribePolicies" value-ref="DescribePolicies"/>
+                <entry key="DescribeScalingActivities" value-ref="DescribeScalingActivities"/>
+                <entry key="DescribeScalingProcessTypes" value-ref="DescribeScalingProcessTypes"/>
+                <entry key="DescribeTerminationPolicyTypes" value-ref="DescribeTerminationPolicyTypes"/>
+                <entry key="ExecutePolicy" value-ref="ExecutePolicy"/>
+                <entry key="PutScalingPolicy" value-ref="PutScalingPolicy"/>
+                <entry key="PutScheduledUpdateGroupAction" value-ref="PutScheduledUpdateGroupAction"/>
+                <entry key="ResumeProcesses" value-ref="ResumeProcesses"/>
+                <entry key="SetDesiredCapacity" value-ref="SetDesiredCapacity"/>
+                <entry key="SetInstanceHealth" value-ref="SetInstanceHealth"/>
+                <entry key="SuspendProcesses" value-ref="SuspendProcesses"/>
+                <entry key="TerminateInstanceInAutoScalingGroup" value-ref="TerminateInstanceInAutoScalingGroup"/>
+                <entry key="UpdateAutoScalingGroup" value-ref="UpdateAutoScalingGroup"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean class="com.msi.tough.core.AppctxInjector"/>
+    <bean id="servicesPropertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+                <list>
+                        <value>classpath*:/*.properties</value>
+                </list>
+        </property>
+    </bean>
+
+    <bean id="endpoint" class="java.lang.String">
+        <constructor-arg value="ActionIn"/>
+    </bean>
+    <bean id="rawEndpoint" class="java.lang.String">
+        <constructor-arg value="DirectToZMQEntry"/>
+    </bean>
+
+    <bean id="workflow" factory-method="getInstance"
+    class="com.msi.tough.workflow.core.MuleWorkflow">
+    </bean>
+
+    <bean id="actionHelper" class="com.msi.tough.query.ActionHelper">
+    </bean>
+
+    <!-- auto-inject, autowire using annotations -->
+    <context:annotation-config />
+
+
+    <bean
+        id="log4jInitializer"
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+
+        <property
+            name="targetClass"
+            value="org.springframework.util.Log4jConfigurer" />
+
+        <property name="targetMethod" value="initLogging" />
+
+        <property name="arguments" >
+            <list>
+                <value>classpath:log4j.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="accessKey" class="java.lang.String">
+        <constructor-arg value="${test.accessKey}"/>
+    </bean>
+
+    <bean id="secretKey" class="java.lang.String">
+        <constructor-arg value="${test.secretKey}"/>
+    </bean>
+    <bean id="testAccountId" class="java.lang.Long">
+        <constructor-arg value="1"/>
+    </bean>
+
+    <bean id="DB_PASSWORD" class="java.lang.String">
+        <constructor-arg value="${db.password}"></constructor-arg>
+    </bean>
+
+    <bean id="limitedQuotaAccessKey" class="java.lang.String">
+        <constructor-arg value="${test.limitedQuotaAccessKey}"/>
+    </bean>
+
+    <bean id="limitedQuotaSecretKey" class="java.lang.String">
+        <constructor-arg value="${test.limitedQuotaSecretKey}"/>
+    </bean>
+
+    <bean id="limitedQuotaOwnerId" class="java.lang.String">
+        <constructor-arg value="${test.limitedQuotaOwnerId}"/>
+    </bean>
+
+    <bean id="limitedQuotaZone" class="java.lang.String">
+        <constructor-arg value="${test.limitedQuotaZone}"/>
+    </bean>
+
+    <bean id="basicAWSCredentials" class="com.amazonaws.auth.BasicAWSCredentials" >
+        <constructor-arg value="${test.accessKey}" />
+        <constructor-arg value="${test.secretKey}" />
+    </bean>
+
+    <bean id="badAWSCredentials" class="com.amazonaws.auth.BasicAWSCredentials" >
+        <constructor-arg value="123412341234" />
+        <constructor-arg value="456456456456" />
+    </bean>
+
+    <bean id="autoScaleClient" class="com.amazonaws.services.autoscaling.AmazonAutoScalingClient" >
+        <constructor-arg ref="basicAWSCredentials" />
+        <property name="endpoint" value="http://${deploy.ip}:8080/AutoScaleQuery/Action" />
+    </bean>
+
+    <bean id="autoScaleClientV2" class="com.amazonaws.services.autoscaling.AmazonAutoScalingClient" >
+        <constructor-arg ref="basicAWSCredentials" />
+        <property name="endpoint" value="http://${deploy.ip}:8080/AutoScaleQuery/AsyncAction/" />
+    </bean>
+
+    <bean id="targetServer" class="java.lang.String">
+        <constructor-arg value="${deploy.ip}"/>
+    </bean>
+
+    <bean id="defaultAvailabilityZone" class="java.lang.String">
+        <constructor-arg value="${default.availability.zone}"/>
+    </bean>
+
+    <bean id="tenant" class="java.lang.String">
+        <constructor-arg value="${ec2.owner.id}"/>
+    </bean>
+
+    <bean id="security" factory-method="getInstance"
+        class="com.msi.tough.security.AESSecurity">
+    </bean>
+
+    <!-- stand-in for full cloud config, with only the current test. -->
+    <util:map id="configuration0">
+        <entry key="KEYS_DIR" value="."/>
+        <entry key="AvailabilityZone" value="${default.availability.zone}"/>
+        <entry key="EC2_URL" value="${ec2.endpoint}"/>
+    </util:map>
+
+    <bean id="configuration" factory-method="merge" class="com.msi.tough.core.MapUtil">
+        <constructor-arg ref="cloud-config"></constructor-arg>
+        <constructor-arg ref="configuration0"></constructor-arg>
+    </bean>
+
+    <bean id="appctx" factory-method="getInstanceForInjection"
+        class="com.msi.tough.core.Appctx">
+        <property name="configuration" ref="configuration"/>
+        <!-- use a single thread executor, so tests don't have to wait. -->
+        <property name="executorServiceInstance">
+            <bean class="com.msi.tough.utils.SynchronousExecutor"/>
+        </property>
+    </bean>
+
+    <bean class="com.msi.tough.core.AppctxInjector"/>
+
+    <bean id="hibernateUtil" class="com.msi.tough.core.HibernateUtil">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- compute setup, for creating instances -->
+    <bean id="computeClient" class="com.amazonaws.services.ec2.AmazonEC2Client" >
+        <constructor-arg ref="basicAWSCredentials" />
+        <property name="endpoint" value="#{ defaultAvailabilityZone == 'us-east-1a' ? 'http://ec2.us-east-1.amazonaws.com/' : 'http://${deploy.ip}:8080/Compute/comp-async/' }" />
+    </bean>
+
+    <bean id="baseImageId" class="java.lang.String">
+        <constructor-arg value="${base.image.id}"/>
+   </bean>
+
+    <bean id="defaultFlavor" class="java.lang.String">
+        <constructor-arg value="${default.flavor}"/>
+   </bean>
+
+    <bean id="runningInstanceHelper" class="com.msi.tough.helper.RunningInstanceHelper" >
+    </bean>
+
+    <bean id="runningAutoScalingInstanceHelper" class="com.msi.tough.query.autoscale.helper.RunningAutoScalingInstanceHelper" >
+    </bean>
+
+
+
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="testConnection" />
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"></property>
+        <property name="hibernateProperties">
+            <value>hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+                hibernate.cache.provider_class=org.hibernate.cache.NoCacheProvider
+                hibernate.show_sql=true
+                hibernate.hbm2ddl.auto=update
+            </value>
+        </property>
+    </bean>
+
+    <bean id="testConnection" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://${deploy.ip}:3306/msi" />
+        <property name="username" value="msi" />
+        <property name="password" value="${db.password}" />
+        <property name="defaultAutoCommit" value="false"></property>
+        <property name="initialSize" value="1"></property>
+        <property name="maxActive" value="5"></property>
+        <property name="testWhileIdle" value="false"></property>
+        <property name="testOnBorrow" value="false"></property>
+        <property name="testOnReturn" value="false"></property>
+        <property name="validationQuery" value="SELECT 1"></property>
+        <property name="timeBetweenEvictionRunsMillis" value="-1"></property>
+        <property name="minIdle" value="0"></property>
+        <property name="maxWait" value="5000"></property>
+        <property name="removeAbandoned" value="false"></property>
+    </bean>
+
+</beans>

@@ -1,0 +1,51 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeLaunchConfigurationsMessage";
+
+message DescribeLaunchConfigurationsRequestMessage {
+    required bool typeId = 214;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    repeated string  launchConfigurationNames = 3;
+    optional uint32  maxRecords = 4;
+    optional string  nextToken  = 5;
+}
+
+message DescribeLaunchConfigurationsResultMessage {
+    required bool     typeId = 215; 
+    message  LaunchConfiguration {
+    	message BlockDeviceMapping {
+    		message Ebs {
+    			optional string snapshotId = 1;
+    			optional uint32 volumeSize = 2;
+    		}
+    		required string deviceName = 1;
+    		optional Ebs    ebs = 2;
+    		optional string virtualName = 3;
+    	}
+    	
+    	repeated BlockDeviceMapping blockDeviceMappings = 1;
+    	required string createdTime = 2;
+    	optional bool   ebsOptimized = 3;
+    	optional string iamInstanceProfile = 4;
+    	required string imageId = 5;
+    	optional bool   instanceMonitoring = 6;
+    	required string instanceType = 7;
+    	optional string kernelId = 8;
+    	optional string keyName = 9;
+    	optional string launchConfigurationARN = 10;
+    	required string launchConfigurationName = 11;
+    	optional string ramdiskId = 12;
+    	repeated string securityGroups = 13;
+    	optional string spotPrice = 14;
+    	optional string userData = 15;
+    	
+    }
+    required string   requestId = 1;
+    required string   callerAccessKey = 2;
+    repeated LaunchConfiguration launchConfigurations = 3;
+    required string   nextToken = 4;
+}
+

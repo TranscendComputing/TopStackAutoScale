@@ -1,0 +1,21 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DescribeTerminationPolicyTypesMessage";
+
+message DescribeTerminationPolicyTypesRequestMessage {
+    required bool typeId = 222;
+
+    required string  requestId = 1;
+    required string  callerAccessKey = 2;
+    required string  autoScalingGroupName = 3;
+
+}
+
+message DescribeTerminationPolicyTypesResultMessage {
+    required bool typeId = 223;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    repeated string terminationPolicyTypes = 3;
+    
+}
