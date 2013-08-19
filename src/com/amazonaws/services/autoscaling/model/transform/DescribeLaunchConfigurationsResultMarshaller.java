@@ -1,12 +1,8 @@
 package com.amazonaws.services.autoscaling.model.transform;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.transform.Marshaller;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.ErrorResponse;
-import com.msi.tough.query.MarshallStruct;
 import com.msi.tough.query.QueryUtil;
 import com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage.DescribeLaunchConfigurationsResultMessage;
 import com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage.DescribeLaunchConfigurationsResultMessage.LaunchConfiguration;
@@ -16,9 +12,6 @@ import com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage.Descr
  */
 public class DescribeLaunchConfigurationsResultMarshaller implements
 		Marshaller<String, DescribeLaunchConfigurationsResultMessage> {
-	private static Logger logger = Appctx
-			.getLogger(DescribeLaunchConfigurationsResultMarshaller.class
-					.getName());
 
 	@Override
 	public String marshall(
@@ -41,7 +34,7 @@ public class DescribeLaunchConfigurationsResultMarshaller implements
 		}
 		return xn.toString();
 	}
-	
+
 	public static void marshallLaunchConfiguration(final XMLNode n,
 			final LaunchConfiguration r) {
 		QueryUtil.addNode(n, "BlockDeviceMappings");

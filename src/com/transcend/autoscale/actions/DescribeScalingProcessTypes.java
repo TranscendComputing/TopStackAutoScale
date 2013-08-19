@@ -1,22 +1,16 @@
 package com.transcend.autoscale.actions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.generationjava.io.xml.XMLNode;
-import com.google.common.base.Strings;
 import com.msi.tough.query.AbstractQueuedAction;
 import com.msi.tough.query.ErrorResponse;
 import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequest;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.ServiceResponse;
-import com.msi.tough.query.autoscale.AutoScaleQueryUtil;
 import com.transcend.autoscale.message.DescribeScalingProcessTypesMessage.DescribeScalingProcessTypesRequestMessage;
 import com.transcend.autoscale.message.DescribeScalingProcessTypesMessage.DescribeScalingProcessTypesResultMessage;
-import com.transcend.autoscale.message.DescribeScalingProcessTypesMessage.DescribeScalingProcessTypesRequestMessage;
 import com.yammer.metrics.core.Meter;
 
 public class DescribeScalingProcessTypes
@@ -59,7 +53,7 @@ public class DescribeScalingProcessTypes
      * com.msi.tough.query.AbstractQueuedAction#handleRequest(com.msi.tough.
      * query.ServiceRequest, com.msi.tough.query.ServiceRequestContext)
      */
-    
+
     @Override
     public DescribeScalingProcessTypesRequestMessage handleRequest(
             ServiceRequest req, ServiceRequestContext context)
@@ -69,7 +63,7 @@ public class DescribeScalingProcessTypes
     			DescribeScalingProcessTypesRequestMessage.newBuilder();
 		return tReq.buildPartial();
     }
-    
+
     /*
      * (non-Javadoc)
      *

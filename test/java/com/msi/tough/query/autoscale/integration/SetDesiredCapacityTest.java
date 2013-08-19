@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class SetDesiredCapacityTest extends AbstractBaseAutoscaleTest {
 
     private final String baseName = UUID.randomUUID().toString()
             .substring(0, 8);
-    
+
     private String defaultAvailabilityZone = null;
 
     String name1 = "cr-asg-1-" + baseName;
@@ -36,7 +35,7 @@ public class SetDesiredCapacityTest extends AbstractBaseAutoscaleTest {
         logger.info("Creating AS group "+name1);
         asGroupHelper.createASGroup(name1);
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();

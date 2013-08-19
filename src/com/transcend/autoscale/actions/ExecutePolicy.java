@@ -29,7 +29,7 @@ public class ExecutePolicy
     		ExecutePolicyResultMessage message) {
     	final XMLNode xn = new XMLNode("ExecutePolicyResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn, "ExecutePolicyResult");
+		QueryUtil.addNode(xn, "ExecutePolicyResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");
@@ -44,7 +44,7 @@ public class ExecutePolicy
      * com.msi.tough.query.AbstractQueuedAction#handleRequest(com.msi.tough.
      * query.ServiceRequest, com.msi.tough.query.ServiceRequestContext)
      */
-    
+
     @Override
     public ExecutePolicyRequestMessage handleRequest(
             ServiceRequest req, ServiceRequestContext context)
@@ -60,7 +60,7 @@ public class ExecutePolicy
 		tReq.setHonorCooldown(QueryUtil.getBoolean(in, "HonorCooldown"));
 		return tReq.buildPartial();
     }
-    
+
     /*
      * (non-Javadoc)
      *

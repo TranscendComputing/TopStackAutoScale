@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
-import com.amazonaws.services.autoscaling.model.DescribeLaunchConfigurationsRequest;
 import com.amazonaws.transform.Unmarshaller;
 import com.google.common.base.Strings;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequest;
-import com.transcend.autoscale.message.DescribeAutoScalingGroupsMessage.DescribeAutoScalingGroupsRequestMessage;
 import com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage.DescribeLaunchConfigurationsRequestMessage;
 
 /**
@@ -21,9 +16,6 @@ import com.transcend.autoscale.message.DescribeLaunchConfigurationsMessage.Descr
 public class DescribeLaunchConfigurationsRequestUnmarshaller
 		implements
 		Unmarshaller<DescribeLaunchConfigurationsRequestMessage, ServiceRequest> {
-	private static Logger logger = Appctx
-			.getLogger(DescribeLaunchConfigurationsRequestUnmarshaller.class
-					.getName());
 
 	private static DescribeLaunchConfigurationsRequestUnmarshaller instance;
 

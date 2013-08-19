@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,20 +37,20 @@ public class CreateAutoScalingGroupTest extends AbstractBaseAutoscaleTest {
     public void tearDown() throws Exception {
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
+
     @Test(expected = AmazonServiceException.class)
     public void testCreateASGroupMissingArgs() throws Exception {
         final CreateAutoScalingGroupRequest request = new CreateAutoScalingGroupRequest();
         getAutoScaleClientV2().createAutoScalingGroup(request);
     }
-    
+
     @Test(expected = AmazonServiceException.class)
     public void testCreateDupASGroup() throws Exception {
         final CreateAutoScalingGroupRequest request = asGroupHelper
                 .createASGroupRequest(name1);
         getAutoScaleClientV2().createAutoScalingGroup(request);
     }
-   
+
     @Test
     public void testGoodCreate() throws Exception {
         logger.info("Creating AS group "+name1);

@@ -2,11 +2,9 @@ package com.amazonaws.services.autoscaling.model.transform;
 
 import java.util.Map;
 
-import com.amazonaws.services.autoscaling.model.CreateLaunchConfigurationRequest;
 import com.amazonaws.transform.Unmarshaller;
 import com.google.common.base.Strings;
 import com.msi.tough.query.QueryUtil;
-import com.transcend.autoscale.message.CreateAutoScalingGroupMessage.CreateAutoScalingGroupRequestMessage;
 import com.transcend.autoscale.message.CreateLaunchConfigurationMessage.CreateLaunchConfigurationRequestMessage;
 
 /**
@@ -52,7 +50,7 @@ public class CreateLaunchConfigurationRequestUnmarshaller implements
 		if(QueryUtil.getString(in, "UserData")!=null){
 			req.setUserData(QueryUtil.getString(in, "UserData"));
 		}
-	
+
 		return req.buildPartial();
 	}
 }

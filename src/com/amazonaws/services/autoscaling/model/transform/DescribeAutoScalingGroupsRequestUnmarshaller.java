@@ -4,25 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
-import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsRequest;
 import com.amazonaws.transform.Unmarshaller;
 import com.google.common.base.Strings;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequest;
 import com.transcend.autoscale.message.DescribeAutoScalingGroupsMessage.DescribeAutoScalingGroupsRequestMessage;
-import com.transcend.autoscale.message.DescribeAutoScalingInstancesMessage.DescribeAutoScalingInstancesRequestMessage;
 
 /**
  * CreateLoadBalancerRequestUnmarshaller
  */
 public class DescribeAutoScalingGroupsRequestUnmarshaller implements
 		Unmarshaller<DescribeAutoScalingGroupsRequestMessage, ServiceRequest> {
-	private static Logger logger = Appctx
-			.getLogger(DescribeAutoScalingGroupsRequestUnmarshaller.class
-					.getName());
 
 	private static DescribeAutoScalingGroupsRequestUnmarshaller instance;
 

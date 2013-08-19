@@ -10,18 +10,14 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import com.amazonaws.services.autoscaling.model.LaunchConfiguration;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.core.CommaObject;
-import com.msi.tough.core.StringHelper;
 import com.msi.tough.dasein.DaseinHelper;
 import com.msi.tough.model.AccountBean;
 import com.msi.tough.model.LaunchConfigBean;
 import com.msi.tough.query.QueryFaults;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
-import com.msi.tough.query.autoscale.AutoScaleQueryUtil;
 import com.msi.tough.utils.ASUtil;
 import com.msi.tough.utils.AccountUtil;
 import com.msi.tough.workflow.core.AbstractWorker;
@@ -61,18 +57,18 @@ public class CreateLaunchConfigurationWorker extends
     @Transactional
     protected CreateLaunchConfigurationResultMessage doWork0(CreateLaunchConfigurationRequestMessage r,
             ServiceRequestContext context) throws Exception {
-    	
+
     	 final AccountBean ac = context.getAccountBean();
 
          final String name = r.getLaunchConfigurationName();
 
          Session session = getSession();
-   
-    		
-    		logger.info("Launch Configuration Name = " + r.getLaunchConfigurationName());
+
+
+    		logger.info("Launch Configuration Name = " + name);
 
     		final LaunchConfigBean en = ASUtil.readLaunchConfig(session,
-    				ac.getId(), r.getLaunchConfigurationName());
+    				ac.getId(), name);
     		if (en != null) {
     			throw AutoScaleQueryFaults.alreadyExists();
     		}
@@ -96,7 +92,7 @@ public class CreateLaunchConfigurationWorker extends
     		launch.setKey(r.getKeyName());
     		launch.setRamdisk(r.getRamdiskId());
     		final StringBuilder sb = new StringBuilder();
-    		
+
     		if (r.getBlockDeviceMappingsCount() > 0) {
     			for (int i = 0; i < r.getBlockDeviceMappingsCount(); i++) {
     				final BlockDeviceMapping blk = r.getBlockDeviceMappings(i);
@@ -110,8 +106,8 @@ public class CreateLaunchConfigurationWorker extends
     		} else {
     			launch.setBlk_devs(null);
     		}
-    		
-    		
+
+
     		if (r.getSecurityGroupsCount() > 0) {
     			final CommaObject groups = new CommaObject(r.getSecurityGroupsList());
     			launch.setSecGrps(groups.toString());
@@ -122,11 +118,11 @@ public class CreateLaunchConfigurationWorker extends
     		launch.setUserData(r.getUserData());
     		launchConfigs.add(launch);
     		session.save(launch);
-    		
+
 		final CreateLaunchConfigurationResultMessage.Builder result =
         		CreateLaunchConfigurationResultMessage.newBuilder();
 
         return result.buildPartial();
-        
+
     }
 }

@@ -41,7 +41,6 @@ public class SuspendProcesses extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("SuspendProcessesResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = new XMLNode("SuspendProcessesResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");

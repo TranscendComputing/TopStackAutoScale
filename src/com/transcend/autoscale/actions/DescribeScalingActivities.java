@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.amazonaws.services.autoscaling.model.DescribeScalingActivitiesRequest;
 import com.generationjava.io.xml.XMLNode;
 import com.google.common.base.Strings;
 import com.msi.tough.query.AbstractQueuedAction;
@@ -17,7 +16,6 @@ import com.msi.tough.query.ServiceResponse;
 import com.transcend.autoscale.message.DescribeScalingActivitiesMessage.DescribeScalingActivitiesRequestMessage;
 import com.transcend.autoscale.message.DescribeScalingActivitiesMessage.DescribeScalingActivitiesResultMessage;
 import com.transcend.autoscale.message.DescribeScalingActivitiesMessage.DescribeScalingActivitiesResultMessage.Activity;
-import com.transcend.autoscale.message.ExecutePolicyMessage.ExecutePolicyRequestMessage;
 import com.yammer.metrics.core.Meter;
 
 public class DescribeScalingActivities
@@ -69,12 +67,12 @@ public class DescribeScalingActivities
      * com.msi.tough.query.AbstractQueuedAction#handleRequest(com.msi.tough.
      * query.ServiceRequest, com.msi.tough.query.ServiceRequestContext)
      */
-    
+
     @Override
     public DescribeScalingActivitiesRequestMessage handleRequest(
             ServiceRequest req, ServiceRequestContext context)
             throws ErrorResponse {
-    	
+
 		final DescribeScalingActivitiesRequestMessage.Builder tReq = DescribeScalingActivitiesRequestMessage.newBuilder();
     	final Map<String, String[]> in = req.getParameterMap();
 		tReq.setAutoScalingGroupName(Strings.nullToEmpty(QueryUtil.getString(in,
@@ -91,7 +89,7 @@ public class DescribeScalingActivities
 		tReq.addAllActivityIds(ids);
 		return tReq.buildPartial();
     }
-    
+
     /*
      * (non-Javadoc)
      *

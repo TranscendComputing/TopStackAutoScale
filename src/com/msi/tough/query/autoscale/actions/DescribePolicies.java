@@ -10,13 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.DescribePoliciesRequest;
 import com.amazonaws.services.autoscaling.model.DescribePoliciesResult;
 import com.amazonaws.services.autoscaling.model.ScalingPolicy;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;
@@ -29,8 +27,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class DescribePolicies extends AbstractAction<DescribePoliciesResult> {
-	private final static Logger logger = Appctx
-			.getLogger(DescribePolicies.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"DescribePolicies");

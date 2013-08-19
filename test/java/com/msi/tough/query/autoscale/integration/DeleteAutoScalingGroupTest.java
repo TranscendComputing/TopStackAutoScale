@@ -2,7 +2,6 @@ package com.msi.tough.query.autoscale.integration;
 
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ public class DeleteAutoScalingGroupTest extends AbstractBaseAutoscaleTest {
 
     private final String baseName = UUID.randomUUID().toString()
             .substring(0, 8);
-    
+
     String name1 = "cr-asg-1-" + baseName;
     String name2 = "cr-asg-2-" + baseName;
 
@@ -33,7 +32,7 @@ public class DeleteAutoScalingGroupTest extends AbstractBaseAutoscaleTest {
         logger.info("Creating AS group "+name1);
         asGroupHelper.createASGroup(name1);
     }
-    
+
 
     @Test(expected = AmazonServiceException.class)
     public void testDeleteASGroupMissingArgs() throws Exception {
@@ -51,8 +50,8 @@ public class DeleteAutoScalingGroupTest extends AbstractBaseAutoscaleTest {
         asGroupHelper.deleteAllCreatedASGroups();
     }
 
-    
-    
+
+
     @Test
     public void testGoodDelete() throws Exception {
         logger.info("Updating AS group "+name1);

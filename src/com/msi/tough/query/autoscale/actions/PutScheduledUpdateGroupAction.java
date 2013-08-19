@@ -38,7 +38,7 @@ public class PutScheduledUpdateGroupAction extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("PutScheduledUpdateGroupActionResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn,
+		QueryUtil.addNode(xn,
 				"PutScheduledUpdateGroupActionResult");
 
 		// add metadata

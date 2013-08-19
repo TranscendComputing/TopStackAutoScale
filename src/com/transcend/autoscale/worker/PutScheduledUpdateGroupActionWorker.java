@@ -1,18 +1,15 @@
 package com.transcend.autoscale.worker;
 
 
-import java.util.Map;
-
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
-import com.amazonaws.services.autoscaling.model.PutScheduledUpdateGroupActionRequest;
+
 import com.amazonaws.util.DateUtils;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASScheduledBean;
 import com.msi.tough.model.AccountBean;
-import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
@@ -40,7 +37,7 @@ public class PutScheduledUpdateGroupActionWorker extends
         logger.debug("Performing work for PutScheduledUpdateGroupAction.");
         return super.doWork(req, getSession());
     }
-    
+
 
     /*
      * (non-Javadoc)
@@ -78,11 +75,11 @@ public class PutScheduledUpdateGroupActionWorker extends
 		b.setMinSize(req.getMinSize());
 		b.setUserId(ac.getId());
 		session.save(b);
-		
+
       final PutScheduledUpdateGroupActionResultMessage.Builder result =
     		  PutScheduledUpdateGroupActionResultMessage.newBuilder();
 
       return result.buildPartial();
-      
+
 	}
 }

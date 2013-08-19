@@ -1,25 +1,19 @@
 package com.transcend.autoscale.worker;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.services.autoscaling.model.DeletePolicyRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;
-import com.msi.tough.query.QueryFaults;
-import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
 import com.msi.tough.workflow.core.AbstractWorker;
-import com.transcend.autoscale.message.CreateLaunchConfigurationMessage.CreateLaunchConfigurationResultMessage;
 import com.transcend.autoscale.message.DeletePolicyMessage.DeletePolicyRequestMessage;
 import com.transcend.autoscale.message.DeletePolicyMessage.DeletePolicyResultMessage;
 
@@ -43,7 +37,7 @@ public class DeletePolicyWorker extends
         logger.debug("Performing work for DeletePolicy.");
         return super.doWork(req, getSession());
     }
-    
+
 
     /*
      * (non-Javadoc)
@@ -56,7 +50,7 @@ public class DeletePolicyWorker extends
     @Transactional
     protected DeletePolicyResultMessage doWork0(DeletePolicyRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
+
 		final AccountBean ac = context.getAccountBean();
 		final Session session = getSession();
 		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
@@ -73,12 +67,12 @@ public class DeletePolicyWorker extends
 		}
 		final ASPolicyBean asp = l.get(0);
 		session.delete(asp);
-		
+
 	final DeletePolicyResultMessage.Builder result =
     		DeletePolicyResultMessage.newBuilder();
 
     return result.buildPartial();
-	
-      
+
+
 	}
 }

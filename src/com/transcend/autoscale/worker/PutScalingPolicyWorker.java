@@ -1,18 +1,15 @@
 package com.transcend.autoscale.worker;
 import java.util.Date;
-import java.util.Map;
 
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.services.autoscaling.model.PutScalingPolicyRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;
 import com.msi.tough.query.QueryFaults;
-import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
@@ -40,7 +37,7 @@ public class PutScalingPolicyWorker extends
         logger.debug("Performing work for PutScalingPolicy.");
         return super.doWork(req, getSession());
     }
-    
+
 
     /*
      * (non-Javadoc)
@@ -53,7 +50,7 @@ public class PutScalingPolicyWorker extends
     @Transactional
     protected PutScalingPolicyResultMessage doWork0(PutScalingPolicyRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
+
 		final AccountBean ac = context.getAccountBean();
 		final Session session = getSession();
 		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
@@ -86,12 +83,12 @@ public class PutScalingPolicyWorker extends
 		asp.setArn("arn:autoscaling:policy:" + ac.getId() + ":"
 				+ req.getPolicyName());
 		session.save(asp);
-		
+
       final PutScalingPolicyResultMessage.Builder result =
     		  PutScalingPolicyResultMessage.newBuilder();
 
       result.setPolicyARN(asp.getArn());
       return result.buildPartial();
-      
+
 	}
 }

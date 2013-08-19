@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.services.autoscaling.model.DescribeLaunchConfigurationsRequest;
 import com.amazonaws.transform.Unmarshaller;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 
 /**
@@ -17,9 +14,6 @@ import com.msi.tough.query.QueryUtil;
 public class DescribeLaunchConfigurationsRequestUnmarshallerVO
 		implements
 		Unmarshaller<DescribeLaunchConfigurationsRequest, Map<String, String[]>> {
-	private static Logger logger = Appctx
-			.getLogger(DescribeLaunchConfigurationsRequestUnmarshallerVO.class
-					.getName());
 
 	private static DescribeLaunchConfigurationsRequestUnmarshallerVO instance;
 

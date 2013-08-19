@@ -16,13 +16,13 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ToughCore"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javalibs">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/ToughResources"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Compute"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TopStackCompute"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TopStackCore"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TopStackResources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

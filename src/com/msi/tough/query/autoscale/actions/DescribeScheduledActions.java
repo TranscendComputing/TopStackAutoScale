@@ -10,13 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.DescribeScheduledActionsRequest;
 import com.amazonaws.services.autoscaling.model.DescribeScheduledActionsResult;
 import com.amazonaws.services.autoscaling.model.ScheduledUpdateGroupAction;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASScheduledBean;
 import com.msi.tough.model.AccountBean;
@@ -30,8 +28,6 @@ import com.yammer.metrics.core.Meter;
 
 public class DescribeScheduledActions extends
 		AbstractAction<DescribeScheduledActionsResult> {
-	private final static Logger logger = Appctx
-			.getLogger(DescribeScheduledActions.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"DescribeScheduledActions");

@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +35,13 @@ public class PutScheduledUpdateGroupActionTest extends AbstractBaseAutoscaleTest
         logger.info("Creating AS group "+name1);
         asGroupHelper.createASGroup(name1);
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
-    
+
+
     @Test(expected = AmazonServiceException.class)
     public void testPutScheduledUGA_MissingArgs() throws Exception {
         final PutScheduledUpdateGroupActionRequest request = new PutScheduledUpdateGroupActionRequest();

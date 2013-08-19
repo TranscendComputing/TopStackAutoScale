@@ -1,7 +1,6 @@
 package com.msi.tough.query.autoscale.integration;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 

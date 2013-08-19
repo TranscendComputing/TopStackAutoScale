@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +36,13 @@ public class ExecutePolicyTest extends AbstractBaseAutoscaleTest {
         logger.info("Creating AS group "+name1);
         asGroupHelper.createASGroup(name1);
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
-    
+
+
     @Test(expected = AmazonServiceException.class)
     public void testExecutePolicyMissingArgs() throws Exception {
         final ExecutePolicyRequest request = new ExecutePolicyRequest();
@@ -61,7 +60,7 @@ public class ExecutePolicyTest extends AbstractBaseAutoscaleTest {
     @Test
     public void testGoodExecutePolicy() throws Exception {
         logger.info("ExecutePolicy applied to group "+name1);
-        
+
         logger.info("ExecutePolicy applied to group "+name1);
         final PutScalingPolicyRequest putRequest = new PutScalingPolicyRequest();
         putRequest.withAutoScalingGroupName(name1);
@@ -69,13 +68,13 @@ public class ExecutePolicyTest extends AbstractBaseAutoscaleTest {
         putRequest.withScalingAdjustment(2);
         putRequest.withPolicyName("NewWorkingPolicy2");
         getAutoScaleClientV2().putScalingPolicy(putRequest);
-        
+
         final ExecutePolicyRequest request = new ExecutePolicyRequest();
         request.withAutoScalingGroupName(name1);
         request.withPolicyName("NewWorkingPolicy2");
         request.withHonorCooldown(false);
         getAutoScaleClientV2().executePolicy(request);
-        
+
         final DeletePolicyRequest delRequest = new DeletePolicyRequest();
         delRequest.withAutoScalingGroupName(name1);
         delRequest.withPolicyName("NewWorkingPolicy2");

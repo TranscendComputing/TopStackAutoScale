@@ -36,8 +36,7 @@ public class DeleteLaunchConfiguration extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("DeleteLaunchConfigurationResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn,
-				"DeleteLaunchConfigurationResult");
+		QueryUtil.addNode(xn, "DeleteLaunchConfigurationResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");

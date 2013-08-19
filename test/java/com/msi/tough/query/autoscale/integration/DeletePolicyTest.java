@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +35,13 @@ public class DeletePolicyTest extends AbstractBaseAutoscaleTest {
         logger.info("Creating AS group "+name1);
         asGroupHelper.createASGroup(name1);
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
-    
+
+
     @Test(expected = AmazonServiceException.class)
     public void testDeletePolicyMissingArgs() throws Exception {
         final DeletePolicyRequest request = new DeletePolicyRequest();
@@ -58,7 +57,7 @@ public class DeletePolicyTest extends AbstractBaseAutoscaleTest {
     }
 
     @Test
-    public void testGoodPutScaling() throws Exception {        
+    public void testGoodPutScaling() throws Exception {
         logger.info("DeletePolicy applied to group "+name1);
         final PutScalingPolicyRequest putRequest = new PutScalingPolicyRequest();
         putRequest.withAutoScalingGroupName(name1);
@@ -66,7 +65,7 @@ public class DeletePolicyTest extends AbstractBaseAutoscaleTest {
         putRequest.withScalingAdjustment(2);
         putRequest.withPolicyName("NewWorkingPolicy2");
         getAutoScaleClientV2().putScalingPolicy(putRequest);
-        
+
         final DeletePolicyRequest request = new DeletePolicyRequest();
         request.withAutoScalingGroupName(name1);
         request.withPolicyName("NewWorkingPolicy2");

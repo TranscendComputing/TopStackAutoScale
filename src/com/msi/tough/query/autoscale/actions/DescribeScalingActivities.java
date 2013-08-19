@@ -84,7 +84,6 @@ public class DescribeScalingActivities extends
 
 		final Collection<Activity> vals = new ArrayList<Activity>();
 		final String nextToken = null;
-		int cnt = 0;
 		boolean all = false;
 		if (r.getActivityIds() == null || r.getActivityIds().size() == 0) {
 			all = true;

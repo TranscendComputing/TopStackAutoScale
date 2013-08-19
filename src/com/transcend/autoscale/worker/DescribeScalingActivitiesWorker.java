@@ -28,7 +28,7 @@ public class DescribeScalingActivitiesWorker extends
         DescribeScalingActivitiesResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeScalingActivitiesWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -55,17 +55,16 @@ public class DescribeScalingActivitiesWorker extends
     protected DescribeScalingActivitiesResultMessage doWork0(DescribeScalingActivitiesRequestMessage req,
             ServiceRequestContext context) throws Exception {
 
-       	
+
     		final AccountBean ac   = context.getAccountBean();
     		final Session session = getSession();
-    		
+
     		final DescribeScalingActivitiesResultMessage.Builder ret = DescribeScalingActivitiesResultMessage.newBuilder();
 
     		final List<ASGroupBean> grpl = ASUtil.readASGroup(session, ac.getId());
 
     		final Collection<Activity> vals = new ArrayList<Activity>();
     		final String nextToken = null;
-    		int cnt = 0;
     		boolean all = false;
     		if (req.getActivityIdsList() == null || req.getActivityIdsCount() == 0) {
     			all = true;
@@ -123,6 +122,6 @@ public class DescribeScalingActivitiesWorker extends
     		}
     		logger.debug("Response " + ret);
     		return ret.buildPartial();
-      
+
 	}
 }

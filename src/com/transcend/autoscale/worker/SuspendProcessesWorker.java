@@ -1,19 +1,13 @@
 package com.transcend.autoscale.worker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.services.autoscaling.model.SuspendProcessesRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.core.CommaObject;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
-import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
@@ -41,7 +35,7 @@ public class SuspendProcessesWorker extends
         logger.debug("Performing work for SuspendProcesses.");
         return super.doWork(req, getSession());
     }
-    
+
 
     /*
      * (non-Javadoc)
@@ -54,7 +48,7 @@ public class SuspendProcessesWorker extends
     @Transactional
     protected SuspendProcessesResultMessage doWork0(SuspendProcessesRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
+
 		final AccountBean ac = context.getAccountBean();
 		Session session = getSession();
 
@@ -66,11 +60,11 @@ public class SuspendProcessesWorker extends
 		final CommaObject co = new CommaObject(req.getScalingProcessesList());
 		en.setSuspend(co.toString());
 		session.save(en);
-		
+
       final SuspendProcessesResultMessage.Builder result =
     		  SuspendProcessesResultMessage.newBuilder();
 
       return result.buildPartial();
-      
+
 	}
 }

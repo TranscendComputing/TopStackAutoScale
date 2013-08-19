@@ -2,11 +2,8 @@ package com.amazonaws.services.autoscaling.model.transform;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.services.autoscaling.model.DeleteAutoScalingGroupRequest;
 import com.amazonaws.transform.Unmarshaller;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 
 /**
@@ -14,9 +11,6 @@ import com.msi.tough.query.QueryUtil;
  */
 public class DeleteAutoScalingGroupRequestUnmarshallerVO implements
 		Unmarshaller<DeleteAutoScalingGroupRequest, Map<String, String[]>> {
-	private static Logger logger = Appctx
-			.getLogger(DeleteAutoScalingGroupRequestUnmarshallerVO.class
-					.getName());
 
 	private static DeleteAutoScalingGroupRequestUnmarshallerVO instance;
 

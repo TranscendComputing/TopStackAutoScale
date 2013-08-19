@@ -1,20 +1,15 @@
 package com.transcend.autoscale.worker;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.services.autoscaling.model.ResumeProcessesRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.core.CommaObject;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
-import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
@@ -27,7 +22,7 @@ public class ResumeProcessesWorker extends
         ResumeProcessesResultMessage> {
     private final Logger logger = Appctx.getLogger(ResumeProcessesWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -54,7 +49,7 @@ public class ResumeProcessesWorker extends
     @Transactional
     protected ResumeProcessesResultMessage doWork0(ResumeProcessesRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
+
 		final AccountBean ac = context.getAccountBean();
 		Session session = getSession();
 		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
@@ -70,11 +65,11 @@ public class ResumeProcessesWorker extends
 		final CommaObject c = new CommaObject(l);
 		en.setSuspend(c.toString());
 		session.save(en);
-		
+
       final ResumeProcessesResultMessage.Builder result =
     		  ResumeProcessesResultMessage.newBuilder();
 
       return result.buildPartial();
-      
+
 	}
 }

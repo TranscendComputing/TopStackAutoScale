@@ -40,7 +40,7 @@ public class DeletePolicy extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("DeletePolicyResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn, "DeletePolicyResult");
+		QueryUtil.addNode(xn, "DeletePolicyResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");

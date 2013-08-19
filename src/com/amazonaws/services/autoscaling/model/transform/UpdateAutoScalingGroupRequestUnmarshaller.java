@@ -1,7 +1,5 @@
 package com.amazonaws.services.autoscaling.model.transform;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -34,16 +32,16 @@ public class UpdateAutoScalingGroupRequestUnmarshaller implements
 	@Override
 	public UpdateAutoScalingGroupRequestMessage unmarshall(
 			final Map<String, String[]> in) {
-		
+
 		final UpdateAutoScalingGroupRequestMessage.Builder req =
 		        UpdateAutoScalingGroupRequestMessage.newBuilder();
-		
+
 		req.setAutoScalingGroupName(QueryUtil.requiredString(in,
 				"AutoScalingGroupName"));
-		
+
 		req.addAllAvailabilityZone(QueryUtil.getStringArray(in,
 		        "AvailabilityZone.member", Integer.MAX_VALUE));
-		
+
 		req.setDefaultCooldown(QueryUtil.getInt(in, "DefaultCooldown"));
 		req.setDesiredCapacity(QueryUtil.getInt(in, "DesiredCapacity"));
 		req.setHealthCheckGracePeriod(QueryUtil.getInt(in,

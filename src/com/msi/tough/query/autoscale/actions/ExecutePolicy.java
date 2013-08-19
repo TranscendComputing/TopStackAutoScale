@@ -22,8 +22,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class ExecutePolicy extends AbstractAction<Object> {
-	private final static Logger logger = Appctx.getLogger(ExecutePolicy.class
-			.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"ExecutePolicy");
@@ -38,7 +36,7 @@ public class ExecutePolicy extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("ExecutePolicyResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn, "ExecutePolicyResult");
+		QueryUtil.addNode(xn, "ExecutePolicyResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");

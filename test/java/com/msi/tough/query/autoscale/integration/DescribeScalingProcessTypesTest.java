@@ -1,8 +1,8 @@
 package com.msi.tough.query.autoscale.integration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
+
 import com.amazonaws.services.autoscaling.model.DescribeScalingProcessTypesRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.query.autoscale.AbstractBaseAutoscaleTest;
@@ -19,5 +19,5 @@ public class DescribeScalingProcessTypesTest extends AbstractBaseAutoscaleTest {
         getAutoScaleClientV2().describeScalingProcessTypes(request);
     }
 
-    
+
 }

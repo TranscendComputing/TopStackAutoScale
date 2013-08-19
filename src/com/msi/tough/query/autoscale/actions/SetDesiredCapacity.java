@@ -6,12 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.SetDesiredCapacityRequest;
 import com.amazonaws.services.autoscaling.model.transform.SetDesiredCapacityRequestUnmarshaller;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
 import com.msi.tough.query.AbstractAction;
@@ -22,8 +20,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class SetDesiredCapacity extends AbstractAction<Object> {
-	private final static Logger logger = Appctx
-			.getLogger(SetDesiredCapacity.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"SetDesiredCapacity");
@@ -38,7 +34,6 @@ public class SetDesiredCapacity extends AbstractAction<Object> {
 			final HttpServletResponse resp) throws Exception {
 		final XMLNode xn = new XMLNode("SetDesiredCapacityResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = new XMLNode("SetDesiredCapacityResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");

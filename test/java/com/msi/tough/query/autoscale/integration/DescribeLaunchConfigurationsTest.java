@@ -1,7 +1,5 @@
 package com.msi.tough.query.autoscale.integration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.After;
@@ -34,15 +32,15 @@ public class DescribeLaunchConfigurationsTest extends AbstractBaseAutoscaleTest 
     @Before
     public void setup(){
         logger.info("Creating AS group "+name1);
-        asGroupHelper.createASGroup(name1);      
-        
+        asGroupHelper.createASGroup(name1);
+
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
+
 
     @Test
     public void testDescribeLaunchConfigurationsNoArgs() throws Exception {
@@ -67,6 +65,6 @@ public class DescribeLaunchConfigurationsTest extends AbstractBaseAutoscaleTest 
 		DescribeRequest.withMaxRecords(5);
         getAutoScaleClientV2().describeLaunchConfigurations(DescribeRequest);
     }
- 
+
 
 }

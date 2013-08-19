@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.amazonaws.services.autoscaling.model.DescribeAdjustmentTypesRequest;
-import com.amazonaws.services.autoscaling.model.PutScalingPolicyRequest;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.query.autoscale.AbstractBaseAutoscaleTest;
 import com.msi.tough.query.autoscale.helper.AutoScaleGroupHelper;
@@ -40,14 +39,14 @@ public class DescribeAdjustmentTypesTest extends AbstractBaseAutoscaleTest {
     public void tearDown() throws Exception {
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
+
     @Test
     public void testGoodDescribeAdjustmentTypes() throws Exception {
         logger.info("Describing adjustment types");
-        
+
         final DescribeAdjustmentTypesRequest request = new DescribeAdjustmentTypesRequest();
         getAutoScaleClientV2().describeAdjustmentTypes(request);
     }
 
-    
+
 }

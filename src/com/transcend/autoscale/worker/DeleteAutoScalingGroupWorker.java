@@ -13,7 +13,6 @@ import com.msi.tough.utils.ASUtil;
 import com.msi.tough.utils.AccountUtil;
 import com.msi.tough.utils.CFUtil;
 import com.msi.tough.workflow.core.AbstractWorker;
-import com.transcend.autoscale.message.CreateLaunchConfigurationMessage.CreateLaunchConfigurationResultMessage;
 import com.transcend.autoscale.message.DeleteAutoScalingGroupMessage.DeleteAutoScalingGroupRequestMessage;
 import com.transcend.autoscale.message.DeleteAutoScalingGroupMessage.DeleteAutoScalingGroupResultMessage;
 
@@ -49,7 +48,7 @@ public class DeleteAutoScalingGroupWorker extends
     @Transactional
     protected DeleteAutoScalingGroupResultMessage doWork0(DeleteAutoScalingGroupRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
+
 		final AccountBean ac = context.getAccountBean();
         Session session = getSession();
 		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
@@ -61,11 +60,11 @@ public class DeleteAutoScalingGroupWorker extends
 		CFUtil.deleteAsyncStackResources(AccountUtil.toAccount(ac), "__as_"
 				+ ac.getId() + "_" + req.getAutoScalingGroupName(), null,
 				req.getAutoScalingGroupName());
-		
+
 	final DeleteAutoScalingGroupResultMessage.Builder result =
     		DeleteAutoScalingGroupResultMessage.newBuilder();
 
     return result.buildPartial();
-        
+
     }
 }

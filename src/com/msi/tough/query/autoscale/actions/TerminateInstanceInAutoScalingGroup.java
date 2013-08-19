@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import com.amazonaws.services.autoscaling.model.TerminateInstanceInAutoScalingGroupRequest;
 
+import com.amazonaws.services.autoscaling.model.TerminateInstanceInAutoScalingGroupRequest;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.core.CommaObject;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
@@ -23,8 +21,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class TerminateInstanceInAutoScalingGroup extends AbstractAction<Object> {
-	private final static Logger logger = Appctx
-			.getLogger(TerminateInstanceInAutoScalingGroup.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"TerminateInstanceInAutoScalingGroup");
@@ -40,8 +36,7 @@ public class TerminateInstanceInAutoScalingGroup extends AbstractAction<Object> 
 		final XMLNode xn = new XMLNode(
 				"TerminateInstanceInAutoScalingGroupResponse");
 		xn.addAttr("xmlns", "http://autoscaling.amazonaws.com/doc/2010-08-01/");
-		final XMLNode xr = QueryUtil.addNode(xn,
-				"TerminateInstanceInAutoScalingGroupResult");
+		QueryUtil.addNode(xn, "TerminateInstanceInAutoScalingGroupResult");
 
 		// add metadata
 		final XMLNode meta = QueryUtil.addNode(xn, "ResponseMetaData");
@@ -70,7 +65,6 @@ public class TerminateInstanceInAutoScalingGroup extends AbstractAction<Object> 
 		if (g == null) {
 			throw AutoScaleQueryFaults.groupDoesNotExist();
 		}
-		final CommaObject insts = new CommaObject(g.getInstances());
 		if (g.getMinSz() == g.getCapacity()
 				&& r.getShouldDecrementDesiredCapacity() != null
 				&& r.getShouldDecrementDesiredCapacity()) {
