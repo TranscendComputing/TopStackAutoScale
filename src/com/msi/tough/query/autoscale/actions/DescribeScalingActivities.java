@@ -117,7 +117,6 @@ public class DescribeScalingActivities extends
 						select = true;
 					}
 					if (select) {
-						cnt++;
 						final Activity activity = new Activity();
 						activity.setActivityId("" + a.getId());
 						activity.setAutoScalingGroupName(g.getName());

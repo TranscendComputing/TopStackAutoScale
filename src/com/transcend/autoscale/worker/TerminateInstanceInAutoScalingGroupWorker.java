@@ -68,7 +68,6 @@ public class TerminateInstanceInAutoScalingGroupWorker extends
 		if (g == null) {
 			throw AutoScaleQueryFaults.groupDoesNotExist();
 		}
-		final CommaObject insts = new CommaObject(g.getInstances());
 		if (g.getMinSz() == g.getCapacity()
 				&& req.hasShouldDecrementDesiredCapacity()
 				&& req.getShouldDecrementDesiredCapacity()) {
