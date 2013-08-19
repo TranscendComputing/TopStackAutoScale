@@ -30,7 +30,7 @@ public class DescribeAutoScalingGroupsWorker extends
         DescribeAutoScalingGroupsResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeAutoScalingGroupsWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -53,12 +53,11 @@ public class DescribeAutoScalingGroupsWorker extends
      * com.msi.tough.workflow.core.AbstractWorker#doWork0(com.google.protobuf
      * .Message, com.msi.tough.query.ServiceRequestContext)
      */
-	@SuppressWarnings("unchecked")
     @Override
     @Transactional
     protected DescribeAutoScalingGroupsResultMessage doWork0(DescribeAutoScalingGroupsRequestMessage req,
             ServiceRequestContext context) throws Exception {
-		
+
 		final DescribeAutoScalingGroupsResultMessage.Builder result = DescribeAutoScalingGroupsResultMessage.newBuilder();
 		final AccountBean ac = context.getAccountBean();
 		final Session session = getSession();
@@ -109,11 +108,11 @@ public class DescribeAutoScalingGroupsWorker extends
 		if (req.getNextToken() != ""
 				&& (firstToken == "" || !req.getNextToken().equals(firstToken))) {
 			throw AutoScaleQueryFaults.invalidNextToken();
-		}	
+		}
       return result.buildPartial();
-      
-	} 
-	
+
+	}
+
 	public static AutoScalingGroup toAutoScalingGroup(final Session s,
 			final long acid, final ASGroupBean en) {
 		final AutoScalingGroup.Builder as = AutoScalingGroup.newBuilder();
@@ -147,7 +146,7 @@ public class DescribeAutoScalingGroupsWorker extends
 		// as.setVPCZoneIdentifier(vPCZoneIdentifier);
 		return as.buildPartial();
 	}
-	
+
 	public static Instance toInstance(final InstanceBean i, final ASGroupBean en) {
 		final Instance.Builder b = Instance.newBuilder();
 		b.setAvailabilityZone(i.getAvzone());
@@ -157,5 +156,5 @@ public class DescribeAutoScalingGroupsWorker extends
 		b.setLaunchConfigurationName(en.getLaunchConfig());
 		return b.buildPartial();
 	}
-	
+
 }

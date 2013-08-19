@@ -61,7 +61,8 @@ public class DeletePolicyWorker extends
 		final Query q = session.createQuery("from ASPolicyBean where userId="
 				+ ac.getId() + " and grpName='" + req.getAutoScalingGroupName()
 				+ "' and name='" + req.getPolicyName() + "'");
-		final List<ASPolicyBean> l = q.list();
+		@SuppressWarnings("unchecked")
+        final List<ASPolicyBean> l = q.list();
 		if (l == null || l.size() == 0) {
 			throw AutoScaleQueryFaults.policyDoesNotExist();
 		}

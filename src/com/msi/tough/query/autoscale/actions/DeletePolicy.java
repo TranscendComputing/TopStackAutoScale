@@ -8,11 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.DeletePolicyRequest;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;
@@ -24,8 +22,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class DeletePolicy extends AbstractAction<Object> {
-	private final static Logger logger = Appctx.getLogger(DeletePolicy.class
-			.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"DeletePolicy");

@@ -22,8 +22,6 @@ public class SetDesiredCapacityTest extends AbstractBaseAutoscaleTest {
     private final String baseName = UUID.randomUUID().toString()
             .substring(0, 8);
 
-    private String defaultAvailabilityZone = null;
-
     String name1 = "cr-asg-1-" + baseName;
     String name2 = "cr-asg-2-" + baseName;
 

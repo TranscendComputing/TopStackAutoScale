@@ -6,18 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.AbstractAction;
 import com.msi.tough.query.MarshallStruct;
 import com.msi.tough.query.QueryUtil;
 import com.yammer.metrics.core.Meter;
 
 public class DescribeAdjustmentTypes extends AbstractAction<Object> {
-	private final static Logger logger = Appctx
-			.getLogger(DescribeAdjustmentTypes.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"DescribeAdjustmentTypes");

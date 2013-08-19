@@ -1,11 +1,9 @@
 package com.transcend.autoscale.actions;
 
 
-import org.slf4j.Logger;
-
 import java.util.Map;
+
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.AbstractQueuedAction;
 import com.msi.tough.query.ErrorResponse;
 import com.msi.tough.query.QueryUtil;
@@ -14,7 +12,6 @@ import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.ServiceResponse;
 import com.transcend.autoscale.message.DescribeTerminationPolicyTypesMessage.DescribeTerminationPolicyTypesRequestMessage;
 import com.transcend.autoscale.message.DescribeTerminationPolicyTypesMessage.DescribeTerminationPolicyTypesResultMessage;
-import com.transcend.autoscale.worker.DescribeTerminationPolicyTypesWorker;
 import com.yammer.metrics.core.Meter;
 
 public class DescribeTerminationPolicyTypes
@@ -23,8 +20,6 @@ public class DescribeTerminationPolicyTypes
 
     private static Map<String, Meter> meters = initMeter("AutoScaling",
             "DescribeTerminationPolicyTypes");
-    private final Logger logger = Appctx.getLogger(DescribeTerminationPolicyTypesWorker.class
-            .getName());
 
     @Override
     protected void mark(Object ret, Exception e) {
@@ -59,7 +54,7 @@ public class DescribeTerminationPolicyTypes
      * com.msi.tough.query.AbstractQueuedAction#handleRequest(com.msi.tough.
      * query.ServiceRequest, com.msi.tough.query.ServiceRequestContext)
      */
-    
+
     @Override
     public DescribeTerminationPolicyTypesRequestMessage handleRequest(
             ServiceRequest req, ServiceRequestContext context)
@@ -70,7 +65,7 @@ public class DescribeTerminationPolicyTypes
 
 		return tReq.buildPartial();
     }
-    
+
     /*
      * (non-Javadoc)
      *

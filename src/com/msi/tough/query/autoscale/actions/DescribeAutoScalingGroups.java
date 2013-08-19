@@ -8,14 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsRequest;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
 import com.amazonaws.services.autoscaling.model.transform.DescribeAutoScalingGroupsRequestUnmarshallerVO;
 import com.amazonaws.services.autoscaling.model.transform.DescribeAutoScalingGroupsResultMarshallerVO;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
 import com.msi.tough.query.AbstractAction;
@@ -27,8 +25,6 @@ import com.yammer.metrics.core.Meter;
 
 public class DescribeAutoScalingGroups extends
 		AbstractAction<DescribeAutoScalingGroupsResult> {
-	private final static Logger logger = Appctx
-			.getLogger(DescribeAutoScalingGroups.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"DescribeAutoScalingGroups");
@@ -51,7 +47,7 @@ public class DescribeAutoScalingGroups extends
 			final Map<String, String[]> map) throws Exception {
 
 		final DescribeAutoScalingGroupsRequest r = DescribeAutoScalingGroupsRequestUnmarshallerVO.getInstance().unmarshall(map);
-		
+
 		final AccountBean ac = getAccountBean();
 		final DescribeAutoScalingGroupsResult ret = new DescribeAutoScalingGroupsResult();
 

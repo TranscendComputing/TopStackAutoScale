@@ -2,11 +2,8 @@ package com.amazonaws.services.autoscaling.model.transform;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.transform.Unmarshaller;
 import com.google.common.base.Strings;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 import com.transcend.autoscale.message.UpdateAutoScalingGroupMessage.UpdateAutoScalingGroupRequestMessage;
 
@@ -16,9 +13,6 @@ import com.transcend.autoscale.message.UpdateAutoScalingGroupMessage.UpdateAutoS
  */
 public class UpdateAutoScalingGroupRequestUnmarshaller implements
 		Unmarshaller<UpdateAutoScalingGroupRequestMessage, Map<String, String[]>> {
-	private static Logger logger = Appctx
-			.getLogger(UpdateAutoScalingGroupRequestUnmarshaller.class
-					.getName());
 
 	private static UpdateAutoScalingGroupRequestUnmarshaller instance;
 

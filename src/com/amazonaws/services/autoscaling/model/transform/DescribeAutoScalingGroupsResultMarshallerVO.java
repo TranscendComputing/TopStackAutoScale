@@ -1,12 +1,9 @@
 package com.amazonaws.services.autoscaling.model.transform;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
 import com.amazonaws.transform.Marshaller;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.MarshallStruct;
 import com.msi.tough.query.QueryUtil;
 import com.msi.tough.query.autoscale.AutoScaleQueryUtil;
@@ -16,9 +13,6 @@ import com.msi.tough.query.autoscale.AutoScaleQueryUtil;
  */
 public class DescribeAutoScalingGroupsResultMarshallerVO implements
 		Marshaller<String, MarshallStruct<DescribeAutoScalingGroupsResult>> {
-	private static Logger logger = Appctx
-			.getLogger(DescribeAutoScalingGroupsResultMarshaller.class
-					.getName());
 
 	@Override
 	public String marshall(

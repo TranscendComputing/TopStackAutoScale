@@ -7,12 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.PutScalingPolicyRequest;
 import com.amazonaws.services.autoscaling.model.PutScalingPolicyResult;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;
@@ -25,8 +23,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class PutScalingPolicy extends AbstractAction<PutScalingPolicyResult> {
-	private final static Logger logger = Appctx
-			.getLogger(PutScalingPolicy.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"PutScalingPolicy");

@@ -2,11 +2,8 @@ package com.amazonaws.services.autoscaling.model.transform;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 import com.amazonaws.services.autoscaling.model.SetDesiredCapacityRequest;
 import com.amazonaws.transform.Unmarshaller;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.query.QueryUtil;
 
 /**
@@ -14,8 +11,6 @@ import com.msi.tough.query.QueryUtil;
  */
 public class SetDesiredCapacityRequestUnmarshaller implements
 		Unmarshaller<SetDesiredCapacityRequest, Map<String, String[]>> {
-	private static Logger logger = Appctx
-			.getLogger(SetDesiredCapacityRequestUnmarshaller.class.getName());
 
 	private static SetDesiredCapacityRequestUnmarshaller instance;
 

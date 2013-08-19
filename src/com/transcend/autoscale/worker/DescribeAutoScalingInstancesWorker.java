@@ -26,7 +26,7 @@ public class DescribeAutoScalingInstancesWorker extends
         DescribeAutoScalingInstancesResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeAutoScalingInstancesWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -49,12 +49,11 @@ public class DescribeAutoScalingInstancesWorker extends
      * com.msi.tough.workflow.core.AbstractWorker#doWork0(com.google.protobuf
      * .Message, com.msi.tough.query.ServiceRequestContext)
      */
-	@SuppressWarnings("unchecked")
     @Override
     @Transactional
     protected DescribeAutoScalingInstancesResultMessage doWork0(DescribeAutoScalingInstancesRequestMessage req,
             ServiceRequestContext context) throws Exception {
-		
+
 		final DescribeAutoScalingInstancesResultMessage.Builder result = DescribeAutoScalingInstancesResultMessage.newBuilder();
 		final AccountBean ac = context.getAccountBean();
 		final Session session = getSession();
@@ -113,6 +112,6 @@ public class DescribeAutoScalingInstancesWorker extends
 
 
       return result.buildPartial();
-      
-	}     
+
+	}
 }

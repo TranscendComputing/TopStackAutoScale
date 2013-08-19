@@ -6,11 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.ExecutePolicyRequest;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASPolicyBean;
 import com.msi.tough.model.AccountBean;

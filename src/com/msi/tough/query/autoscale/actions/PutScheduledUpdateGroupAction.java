@@ -6,11 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.slf4j.Logger;
 
 import com.amazonaws.services.autoscaling.model.PutScheduledUpdateGroupActionRequest;
 import com.generationjava.io.xml.XMLNode;
-import com.msi.tough.core.Appctx;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.ASScheduledBean;
 import com.msi.tough.model.AccountBean;
@@ -22,8 +20,6 @@ import com.msi.tough.utils.ASUtil;
 import com.yammer.metrics.core.Meter;
 
 public class PutScheduledUpdateGroupAction extends AbstractAction<Object> {
-	private final static Logger logger = Appctx
-			.getLogger(PutScheduledUpdateGroupAction.class.getName());
 
 	private static Map<String, Meter> meters = initMeter("AutoScaling",
 			"PutScheduledUpdateGroupAction");

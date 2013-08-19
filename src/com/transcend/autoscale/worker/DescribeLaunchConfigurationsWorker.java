@@ -26,7 +26,7 @@ public class DescribeLaunchConfigurationsWorker extends
         DescribeLaunchConfigurationsResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeLaunchConfigurationsWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -49,12 +49,11 @@ public class DescribeLaunchConfigurationsWorker extends
      * com.msi.tough.workflow.core.AbstractWorker#doWork0(com.google.protobuf
      * .Message, com.msi.tough.query.ServiceRequestContext)
      */
-	@SuppressWarnings("unchecked")
     @Override
     @Transactional
     protected DescribeLaunchConfigurationsResultMessage doWork0(DescribeLaunchConfigurationsRequestMessage req,
             ServiceRequestContext context) throws Exception {
-	
+
 		final AccountBean ac = context.getAccountBean();
 		final DescribeLaunchConfigurationsResultMessage.Builder result = DescribeLaunchConfigurationsResultMessage.newBuilder();
 		result.setNextToken("");
@@ -122,10 +121,10 @@ public class DescribeLaunchConfigurationsWorker extends
 		return result.buildPartial();
 
 
-      
+
 	}
-	
-	
+
+
 	public static LaunchConfiguration toLaunchConfiguration(
 			final LaunchConfigBean b) {
 		final LaunchConfiguration.Builder r = LaunchConfiguration.newBuilder();
