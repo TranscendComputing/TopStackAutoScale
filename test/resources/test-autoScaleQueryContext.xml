@@ -299,7 +299,6 @@
     <util:map id="configuration0">
         <entry key="KEYS_DIR" value="."/>
         <entry key="AvailabilityZone" value="${default.availability.zone}"/>
-        <entry key="EC2_URL" value="${ec2.endpoint}"/>
     </util:map>
 
     <bean id="configuration" factory-method="merge" class="com.msi.tough.core.MapUtil">
