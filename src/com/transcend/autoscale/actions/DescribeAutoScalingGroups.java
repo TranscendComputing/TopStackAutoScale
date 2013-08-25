@@ -1,4 +1,5 @@
 package com.transcend.autoscale.actions;
+
 import java.util.Map;
 
 import com.amazonaws.services.autoscaling.model.transform.DescribeAutoScalingGroupsRequestUnmarshaller;
@@ -25,9 +26,11 @@ public class DescribeAutoScalingGroups
     }
 
     public String marshall(ServiceResponse resp,
-    		DescribeAutoScalingGroupsResultMessage message) throws ErrorResponse {
-		return new DescribeAutoScalingGroupsResultMarshaller().marshall(message);
-		
+            DescribeAutoScalingGroupsResultMessage message)
+            throws ErrorResponse {
+        return new DescribeAutoScalingGroupsResultMarshaller()
+                .marshall(message);
+
     }
 
     /*
@@ -37,20 +40,20 @@ public class DescribeAutoScalingGroups
      * com.msi.tough.query.AbstractQueuedAction#handleRequest(com.msi.tough.
      * query.ServiceRequest, com.msi.tough.query.ServiceRequestContext)
      */
-    
+
     @Override
     public DescribeAutoScalingGroupsRequestMessage handleRequest(
             ServiceRequest req, ServiceRequestContext context)
             throws ErrorResponse {
-    		try {
-				return DescribeAutoScalingGroupsRequestUnmarshaller
-						.getInstance().unmarshall(req);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw ErrorResponse.InternalFailure();
-			}
+        try {
+            return DescribeAutoScalingGroupsRequestUnmarshaller.getInstance()
+                    .unmarshall(req);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw ErrorResponse.InternalFailure();
+        }
     }
-    
+
     /*
      * (non-Javadoc)
      *
@@ -60,7 +63,8 @@ public class DescribeAutoScalingGroups
      */
     @Override
     public ServiceResponse buildResponse(ServiceResponse resp,
-    		DescribeAutoScalingGroupsResultMessage message) throws ErrorResponse{
+            DescribeAutoScalingGroupsResultMessage message)
+            throws ErrorResponse {
         resp.setPayload(marshall(resp, message));
         return resp;
     }

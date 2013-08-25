@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.msi.tough.core.Appctx;
-import com.msi.tough.core.CommaObject;
 import com.msi.tough.model.ASGroupBean;
 import com.msi.tough.model.AccountBean;
+import com.msi.tough.model.InstanceBean;
 import com.msi.tough.query.ServiceRequestContext;
 import com.msi.tough.query.autoscale.AutoScaleQueryFaults;
 import com.msi.tough.utils.ASUtil;
@@ -56,9 +56,10 @@ public class TerminateInstanceInAutoScalingGroupWorker extends
 		final List<ASGroupBean> gs = ASUtil.readASGroup(session, account.getId());
 		ASGroupBean g = null;
 		for (final ASGroupBean g0 : gs) {
-			final CommaObject insts = new CommaObject(g0.getInstances());
-			for (final String i : insts.toList()) {
-				if (req.getInstanceId().equals(i)) {
+		    List<InstanceBean> insts = g0.getScaledInstances(session);
+			for (final InstanceBean ib : insts) {
+			    String instanceId = ib.getInstanceId();
+				if (req.getInstanceId().equals(instanceId)) {
 					g = g0;
 					break;
 				}

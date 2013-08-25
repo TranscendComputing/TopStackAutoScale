@@ -140,10 +140,9 @@ public class AutoScaleQueryUtil {
 		// as.setEnabledMetrics(enabledMetrics);
 		as.setHealthCheckGracePeriod(en.getHealthCheckGracePeriod());
 		as.setHealthCheckType(en.getHealthCheckType());
-		final CommaObject ico = new CommaObject(en.getInstances());
+		Collection<InstanceBean> instanceBeans = en.getScaledInstances(s);
 		final Collection<Instance> instances = new ArrayList<Instance>();
-		for (final String id : ico.toList()) {
-			final InstanceBean i = InstanceUtil.getInstance(s, id);
+		for (final InstanceBean i : instanceBeans) {
 			if (i != null) {
 				final Instance inst = InstanceUtil.toInstance(i);
 				inst.setLaunchConfigurationName(en.getLaunchConfig());
