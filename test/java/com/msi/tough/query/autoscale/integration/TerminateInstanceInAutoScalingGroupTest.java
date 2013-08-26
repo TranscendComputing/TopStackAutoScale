@@ -36,8 +36,6 @@ public class TerminateInstanceInAutoScalingGroupTest extends AbstractBaseAutosca
             .substring(0, 8);
 
     String name1 = "trmIn-asg-1-" + baseName;
-    String name2 = "trmIn-asg-2-" + baseName;
-    String name3 = "trmIn-asg-2-" + baseName;
 
     @Autowired
     private AutoScaleGroupHelper asGroupHelper;
@@ -52,7 +50,7 @@ public class TerminateInstanceInAutoScalingGroupTest extends AbstractBaseAutosca
     @Test(expected = AmazonServiceException.class)
     public void testTerminateInvalidId() throws Exception {
         final TerminateInstanceInAutoScalingGroupRequest request = new TerminateInstanceInAutoScalingGroupRequest();
-        request.withInstanceId(name2);
+        request.withInstanceId(name1);
         getAutoScaleClientV2().terminateInstanceInAutoScalingGroup(request);
     }
 
@@ -61,8 +59,8 @@ public class TerminateInstanceInAutoScalingGroupTest extends AbstractBaseAutosca
     @Test
     public void testGoodTerminate() throws Exception {
 
-        logger.info("Will terminate instance in autoScalingGroup: " + name3);
-    	String instanceId = runningASInstanceHelper.getNewInstanceId(name3);
+        logger.info("Will terminate instance in autoScalingGroup: " + name1);
+    	String instanceId = runningASInstanceHelper.getNewInstanceId(name1);
         logger.debug("instanceId is: " + instanceId);
 
         final TerminateInstanceInAutoScalingGroupRequest request = new TerminateInstanceInAutoScalingGroupRequest();

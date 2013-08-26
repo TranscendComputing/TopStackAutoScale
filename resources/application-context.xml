@@ -388,6 +388,23 @@
     <bean id="GatherASTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="GatherASJob" />
         <property name="startDelay" value="1000" />
-        <property name="repeatInterval" value="60000" />
+        <property name="repeatInterval" value="61000" />
     </bean>
+
+    <bean id="ProcessTerminatedInstancesJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.msi.tough.scheduler.http.HttpService" />
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="url" value="http://SRVHOST:8080/ASInternal" />
+                <entry key="parameters" value="Action=ProcessTerminatedInstances" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="ProcessTerminatedInstancesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="ProcessTerminatedInstancesJob" />
+        <property name="startDelay" value="1000" />
+        <property name="repeatInterval" value="62000" />
+    </bean>
+
 </beans>
