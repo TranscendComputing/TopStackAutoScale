@@ -33,7 +33,7 @@ public class PutScheduledUpdateGroupActionWorker extends
      */
     @Transactional
     public PutScheduledUpdateGroupActionResultMessage doWork(
-    		PutScheduledUpdateGroupActionRequestMessage req) throws Exception {
+            PutScheduledUpdateGroupActionRequestMessage req) throws Exception {
         logger.debug("Performing work for PutScheduledUpdateGroupAction.");
         return super.doWork(req, getSession());
     }
@@ -51,35 +51,35 @@ public class PutScheduledUpdateGroupActionWorker extends
     protected PutScheduledUpdateGroupActionResultMessage doWork0(PutScheduledUpdateGroupActionRequestMessage req,
             ServiceRequestContext context) throws Exception {
 
-		final AccountBean ac = context.getAccountBean();
-		final Session session = getSession();
-		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
-				req.getAutoScalingGroupName());
-		if (en == null) {
-			throw AutoScaleQueryFaults.groupDoesNotExist();
-		}
-		ASScheduledBean b = ASUtil.readScheduled(session, ac.getId(),
-				req.getAutoScalingGroupName(), req.getScheduledActionName());
-		if (b == null) {
-			b = new ASScheduledBean();
-		}
-		b.setCapacity(req.getDesiredCapacity());
-		if(req.getEndTime() != "")
-			b.setEndTime(new DateUtils().parseIso8601Date(req.getEndTime()));
-		b.setGrpName(req.getAutoScalingGroupName());
-		b.setName(req.getScheduledActionName());
-		b.setRecurrence(req.getRecurrence());
-		if(req.getStartTime() != "")
-			b.setStartTime(new DateUtils().parseIso8601Date(req.getStartTime()));
-		b.setMaxSize(req.getMaxSize());
-		b.setMinSize(req.getMinSize());
-		b.setUserId(ac.getId());
-		session.save(b);
+        final AccountBean ac = context.getAccountBean();
+        final Session session = getSession();
+        final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
+                req.getAutoScalingGroupName());
+        if (en == null) {
+            throw AutoScaleQueryFaults.groupDoesNotExist();
+        }
+        ASScheduledBean b = ASUtil.readScheduled(session, ac.getId(),
+                req.getAutoScalingGroupName(), req.getScheduledActionName());
+        if (b == null) {
+            b = new ASScheduledBean();
+        }
+        b.setCapacity(req.getDesiredCapacity());
+        if(req.getEndTime() != "")
+            b.setEndTime(new DateUtils().parseIso8601Date(req.getEndTime()));
+        b.setGrpName(req.getAutoScalingGroupName());
+        b.setName(req.getScheduledActionName());
+        b.setRecurrence(req.getRecurrence());
+        if(req.getStartTime() != "")
+            b.setStartTime(new DateUtils().parseIso8601Date(req.getStartTime()));
+        b.setMaxSize(req.getMaxSize());
+        b.setMinSize(req.getMinSize());
+        b.setUserId(ac.getId());
+        session.save(b);
 
       final PutScheduledUpdateGroupActionResultMessage.Builder result =
-    		  PutScheduledUpdateGroupActionResultMessage.newBuilder();
+              PutScheduledUpdateGroupActionResultMessage.newBuilder();
 
       return result.buildPartial();
 
-	}
+    }
 }

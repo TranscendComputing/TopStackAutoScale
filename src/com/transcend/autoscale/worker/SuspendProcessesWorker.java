@@ -31,7 +31,7 @@ public class SuspendProcessesWorker extends
      */
     @Transactional
     public SuspendProcessesResultMessage doWork(
-    		SuspendProcessesRequestMessage req) throws Exception {
+            SuspendProcessesRequestMessage req) throws Exception {
         logger.debug("Performing work for SuspendProcesses.");
         return super.doWork(req, getSession());
     }
@@ -49,22 +49,22 @@ public class SuspendProcessesWorker extends
     protected SuspendProcessesResultMessage doWork0(SuspendProcessesRequestMessage req,
             ServiceRequestContext context) throws Exception {
 
-		final AccountBean ac = context.getAccountBean();
-		Session session = getSession();
+        final AccountBean ac = context.getAccountBean();
+        Session session = getSession();
 
-		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
-				req.getAutoScalingGroupName());
-		if (en == null) {
-			throw AutoScaleQueryFaults.groupDoesNotExist();
-		}
-		final CommaObject co = new CommaObject(req.getScalingProcessesList());
-		en.setSuspend(co.toString());
-		session.save(en);
+        final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
+                req.getAutoScalingGroupName());
+        if (en == null) {
+            throw AutoScaleQueryFaults.groupDoesNotExist();
+        }
+        final CommaObject co = new CommaObject(req.getScalingProcessesList());
+        en.setSuspend(co.toString());
+        session.save(en);
 
       final SuspendProcessesResultMessage.Builder result =
-    		  SuspendProcessesResultMessage.newBuilder();
+              SuspendProcessesResultMessage.newBuilder();
 
       return result.buildPartial();
 
-	}
+    }
 }

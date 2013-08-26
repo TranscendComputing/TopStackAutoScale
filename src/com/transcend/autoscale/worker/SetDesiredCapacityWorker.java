@@ -31,11 +31,11 @@ public class SetDesiredCapacityWorker extends
      */
     @Transactional
     public SetDesiredCapacityResultMessage doWork(
-    		SetDesiredCapacityRequestMessage req) throws Exception {
+            SetDesiredCapacityRequestMessage req) throws Exception {
         logger.debug("Performing work for SetDesiredCapacity.");
         return super.doWork(req, getSession());
     }
-    
+
 
     /*
      * (non-Javadoc)
@@ -48,24 +48,24 @@ public class SetDesiredCapacityWorker extends
     @Transactional
     protected SetDesiredCapacityResultMessage doWork0(SetDesiredCapacityRequestMessage req,
             ServiceRequestContext context) throws Exception {
-    	
-		final Session session = getSession();
-		final AccountBean ac = context.getAccountBean();
-		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
-				req.getAutoScalingGroupName());
-		if (en == null) {
-			throw AutoScaleQueryFaults.groupDoesNotExist();
-		}
-		if (req.getDesiredCapacity() < 0) {
-			throw AutoScaleQueryFaults.desiredCapacityNegative(req.getDesiredCapacity());
-		}
-		en.setCapacity(req.getDesiredCapacity());
-		session.save(en);
-		
+
+        final Session session = getSession();
+        final AccountBean ac = context.getAccountBean();
+        final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
+                req.getAutoScalingGroupName());
+        if (en == null) {
+            throw AutoScaleQueryFaults.groupDoesNotExist();
+        }
+        if (req.getDesiredCapacity() < 0) {
+            throw AutoScaleQueryFaults.desiredCapacityNegative(req.getDesiredCapacity());
+        }
+        en.setCapacity(req.getDesiredCapacity());
+        session.save(en);
+
       final SetDesiredCapacityResultMessage.Builder result =
-    		  SetDesiredCapacityResultMessage.newBuilder();
+              SetDesiredCapacityResultMessage.newBuilder();
 
       return result.buildPartial();
-      
-	}
+
+    }
 }

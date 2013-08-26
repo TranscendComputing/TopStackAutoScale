@@ -15,7 +15,7 @@ public class DescribeScalingProcessTypesWorker extends
         DescribeScalingProcessTypesResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeScalingProcessTypesWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -43,9 +43,9 @@ public class DescribeScalingProcessTypesWorker extends
             ServiceRequestContext context) throws Exception {
 
       final DescribeScalingProcessTypesResultMessage.Builder result =
-    		  DescribeScalingProcessTypesResultMessage.newBuilder();
+              DescribeScalingProcessTypesResultMessage.newBuilder();
 
       return result.buildPartial();
-      
-	}
+
+    }
 }

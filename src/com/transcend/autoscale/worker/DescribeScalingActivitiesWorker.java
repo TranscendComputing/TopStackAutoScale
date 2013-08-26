@@ -39,7 +39,7 @@ public class DescribeScalingActivitiesWorker extends
      */
     @Transactional
     public DescribeScalingActivitiesResultMessage doWork(
-    		DescribeScalingActivitiesRequestMessage req) throws Exception {
+            DescribeScalingActivitiesRequestMessage req) throws Exception {
         logger.debug("Performing work for DescribeScalingActivities.");
         return super.doWork(req, getSession());
     }
@@ -56,71 +56,71 @@ public class DescribeScalingActivitiesWorker extends
             ServiceRequestContext context) throws Exception {
 
 
-    		final AccountBean ac   = context.getAccountBean();
-    		final Session session = getSession();
+            final AccountBean ac   = context.getAccountBean();
+            final Session session = getSession();
 
-    		final DescribeScalingActivitiesResultMessage.Builder ret = DescribeScalingActivitiesResultMessage.newBuilder();
+            final DescribeScalingActivitiesResultMessage.Builder ret = DescribeScalingActivitiesResultMessage.newBuilder();
 
-    		final List<ASGroupBean> grpl = ASUtil.readASGroup(session, ac.getId());
+            final List<ASGroupBean> grpl = ASUtil.readASGroup(session, ac.getId());
 
-    		final Collection<Activity> vals = new ArrayList<Activity>();
-    		final String nextToken = null;
-    		boolean all = false;
-    		if (req.getActivityIdsList() == null || req.getActivityIdsCount() == 0) {
-    			all = true;
-    		}
-    		final String grpName = req.getAutoScalingGroupName();
-    		if (grpl != null) {
-    			for (final ASGroupBean g : grpl) {
-    				if (!"".equals(grpName) && !grpName.equals(g.getName())) {
-    					continue;
-    				}
-    				final List<ASActivityLog> actl = ASUtil.readASActivityLog(
-    						session, ac.getId(), g.getId());
-    				for (final ASActivityLog a : actl) {
-    					// if (req.getNextToken() != null
-    					// && a.getName().compareTo(req.getNextToken()) < 0) {
-    					// continue;
-    					// }
-    					// if (req.getMaxRecords() != 0 && req.getMaxRecords() <= cnt) {
-    					// nextToken = g.getName();
-    					// break;
-    					// }
-    					boolean select = false;
-    					if (!all) {
-    						for (final String s : req.getActivityIdsList()) {
-    							if (s.equals("" + a.getId())) {
-    								select = true;
-    								break;
-    							}
-    						}
-    					} else {
-    						select = true;
-    					}
-    					if (select) {
-    						final Activity.Builder activity = Activity.newBuilder();
-    						activity.setActivityId("" + a.getId());
-    						activity.setAutoScalingGroupName(g.getName());
-    						activity.setCause(a.getCause());
-    						activity.setDescription(a.getDescription());
-    						activity.setDetails(a.getDetails());
-    						activity.setEndTime(new DateUtils().formatIso8601Date(a.getEndTime()));
-    						activity.setProgress(a.getProgress());
-    						activity.setStartTime(new DateUtils().formatIso8601Date(a.getStartTime()));
-    						activity.setStatusCode(a.getStatusCode());
-    						activity.setStatusMessage(a.getStatusMsg());
-    						vals.add(activity.buildPartial());
-    					}
-    				}
-    			}
-    		}
-    		ret.addAllActivities(vals);
-    		ret.setNextToken(Strings.nullToEmpty(nextToken));
-    		if (!"".equals(req.getNextToken()) && vals.size() == 0) {
-    			throw AutoScaleQueryFaults.invalidNextToken();
-    		}
-    		logger.debug("Response " + ret);
-    		return ret.buildPartial();
+            final Collection<Activity> vals = new ArrayList<Activity>();
+            final String nextToken = null;
+            boolean all = false;
+            if (req.getActivityIdsList() == null || req.getActivityIdsCount() == 0) {
+                all = true;
+            }
+            final String grpName = req.getAutoScalingGroupName();
+            if (grpl != null) {
+                for (final ASGroupBean g : grpl) {
+                    if (!"".equals(grpName) && !grpName.equals(g.getName())) {
+                        continue;
+                    }
+                    final List<ASActivityLog> actl = ASUtil.readASActivityLog(
+                            session, ac.getId(), g.getId());
+                    for (final ASActivityLog a : actl) {
+                        // if (req.getNextToken() != null
+                        // && a.getName().compareTo(req.getNextToken()) < 0) {
+                        // continue;
+                        // }
+                        // if (req.getMaxRecords() != 0 && req.getMaxRecords() <= cnt) {
+                        // nextToken = g.getName();
+                        // break;
+                        // }
+                        boolean select = false;
+                        if (!all) {
+                            for (final String s : req.getActivityIdsList()) {
+                                if (s.equals("" + a.getId())) {
+                                    select = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            select = true;
+                        }
+                        if (select) {
+                            final Activity.Builder activity = Activity.newBuilder();
+                            activity.setActivityId("" + a.getId());
+                            activity.setAutoScalingGroupName(g.getName());
+                            activity.setCause(a.getCause());
+                            activity.setDescription(a.getDescription());
+                            activity.setDetails(a.getDetails());
+                            activity.setEndTime(new DateUtils().formatIso8601Date(a.getEndTime()));
+                            activity.setProgress(a.getProgress());
+                            activity.setStartTime(new DateUtils().formatIso8601Date(a.getStartTime()));
+                            activity.setStatusCode(a.getStatusCode());
+                            activity.setStatusMessage(a.getStatusMsg());
+                            vals.add(activity.buildPartial());
+                        }
+                    }
+                }
+            }
+            ret.addAllActivities(vals);
+            ret.setNextToken(Strings.nullToEmpty(nextToken));
+            if (!"".equals(req.getNextToken()) && vals.size() == 0) {
+                throw AutoScaleQueryFaults.invalidNextToken();
+            }
+            logger.debug("Response " + ret);
+            return ret.buildPartial();
 
-	}
+    }
 }

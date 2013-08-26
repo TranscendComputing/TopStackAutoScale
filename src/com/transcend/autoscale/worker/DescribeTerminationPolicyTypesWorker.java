@@ -15,7 +15,7 @@ public class DescribeTerminationPolicyTypesWorker extends
         DescribeTerminationPolicyTypesResultMessage> {
     private final Logger logger = Appctx.getLogger(DescribeTerminationPolicyTypesWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -43,9 +43,9 @@ public class DescribeTerminationPolicyTypesWorker extends
             ServiceRequestContext context) throws Exception {
 
       final DescribeTerminationPolicyTypesResultMessage.Builder result =
-    		  DescribeTerminationPolicyTypesResultMessage.newBuilder();
+              DescribeTerminationPolicyTypesResultMessage.newBuilder();
 
       return result.buildPartial();
-      
-	}
+
+    }
 }

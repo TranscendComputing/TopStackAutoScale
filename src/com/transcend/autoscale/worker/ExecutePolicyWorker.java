@@ -20,7 +20,7 @@ public class ExecutePolicyWorker extends
         ExecutePolicyResultMessage> {
     private final Logger logger = Appctx.getLogger(ExecutePolicyWorker.class
             .getName());
-    
+
     /**
      * We need a local copy of this doWork to provide the transactional
      * annotation.  Transaction management is handled by the annotation, which
@@ -47,27 +47,27 @@ public class ExecutePolicyWorker extends
     @Transactional
     protected ExecutePolicyResultMessage doWork0(ExecutePolicyRequestMessage req,
             ServiceRequestContext context) throws Exception {
-		final Session session = getSession();
-		final AccountBean ac = context.getAccountBean();
-		final ASGroupBean g = ASUtil.readASGroup(session, ac.getId(),
-				req.getAutoScalingGroupName());
-		if (g == null) {
-			throw AutoScaleQueryFaults.groupDoesNotExist();
-		}
-		final ASPolicyBean asp = ASUtil.readASPolicy(session, ac.getId(),
-				req.getPolicyName());
-		if (asp == null) {
-			throw AutoScaleQueryFaults.policyDoesNotExist();
-		}
-		if (req.hasHonorCooldown() && req.getHonorCooldown()
-				&& g.getCooldownTime() != null
-				&& g.getCooldownTime().getTime() > System.currentTimeMillis()) {
-			throw AutoScaleQueryFaults.scalingActivityInProgress();
-		}
-		ASUtil.executeASPolicy(session, ac.getId(), req.getPolicyName());
-		
-	  final ExecutePolicyResultMessage.Builder result = ExecutePolicyResultMessage.newBuilder();
+        final Session session = getSession();
+        final AccountBean ac = context.getAccountBean();
+        final ASGroupBean g = ASUtil.readASGroup(session, ac.getId(),
+                req.getAutoScalingGroupName());
+        if (g == null) {
+            throw AutoScaleQueryFaults.groupDoesNotExist();
+        }
+        final ASPolicyBean asp = ASUtil.readASPolicy(session, ac.getId(),
+                req.getPolicyName());
+        if (asp == null) {
+            throw AutoScaleQueryFaults.policyDoesNotExist();
+        }
+        if (req.hasHonorCooldown() && req.getHonorCooldown()
+                && g.getCooldownTime() != null
+                && g.getCooldownTime().getTime() > System.currentTimeMillis()) {
+            throw AutoScaleQueryFaults.scalingActivityInProgress();
+        }
+        ASUtil.executeASPolicy(session, ac.getId(), req.getPolicyName());
+
+      final ExecutePolicyResultMessage.Builder result = ExecutePolicyResultMessage.newBuilder();
       return result.buildPartial();
-      
-	}     
+
+    }
 }

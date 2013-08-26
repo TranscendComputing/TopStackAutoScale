@@ -33,7 +33,7 @@ public class PutScalingPolicyWorker extends
      */
     @Transactional
     public PutScalingPolicyResultMessage doWork(
-    		PutScalingPolicyRequestMessage req) throws Exception {
+            PutScalingPolicyRequestMessage req) throws Exception {
         logger.debug("Performing work for PutScalingPolicy.");
         return super.doWork(req, getSession());
     }
@@ -51,44 +51,44 @@ public class PutScalingPolicyWorker extends
     protected PutScalingPolicyResultMessage doWork0(PutScalingPolicyRequestMessage req,
             ServiceRequestContext context) throws Exception {
 
-		final AccountBean ac = context.getAccountBean();
-		final Session session = getSession();
-		final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
-				req.getAutoScalingGroupName());
-		if (en == null) {
-			throw AutoScaleQueryFaults.policyDoesNotExist();
-		}
-		if (req.hasMinAdjustmentStep() && req.getMinAdjustmentStep() > 0
-				&& !req.getAdjustmentType().equals("PercentChangeInCapacity")) {
-			throw QueryFaults
-					.InvalidParameterCombination("MinAdjustmentStep is valid only with an AdjustmentType PercentChangeInCapacity");
-		}
-		{
-			final ASPolicyBean b = ASUtil.readASPolicy(session, ac.getId(),
-					req.getPolicyName());
-			if (b != null) {
-				throw AutoScaleQueryFaults.alreadyExists();
-			}
-		}
+        final AccountBean ac = context.getAccountBean();
+        final Session session = getSession();
+        final ASGroupBean en = ASUtil.readASGroup(session, ac.getId(),
+                req.getAutoScalingGroupName());
+        if (en == null) {
+            throw AutoScaleQueryFaults.policyDoesNotExist();
+        }
+        if (req.hasMinAdjustmentStep() && req.getMinAdjustmentStep() > 0
+                && !req.getAdjustmentType().equals("PercentChangeInCapacity")) {
+            throw QueryFaults
+                    .InvalidParameterCombination("MinAdjustmentStep is valid only with an AdjustmentType PercentChangeInCapacity");
+        }
+        {
+            final ASPolicyBean b = ASUtil.readASPolicy(session, ac.getId(),
+                    req.getPolicyName());
+            if (b != null) {
+                throw AutoScaleQueryFaults.alreadyExists();
+            }
+        }
 
-		final ASPolicyBean asp = new ASPolicyBean();
-		asp.setAdjustmentType(req.getAdjustmentType());
-		asp.setCooldown(req.getCooldown());
-		asp.setCreatedDate(new Date());
-		asp.setGrpName(req.getAutoScalingGroupName());
-		asp.setName(req.getPolicyName());
-		asp.setScalingAdjustment(req.getScalingAdjustment());
-		asp.setUserId(ac.getId());
-		asp.setMinAdjustmentStep(req.getMinAdjustmentStep());
-		asp.setArn("arn:autoscaling:policy:" + ac.getId() + ":"
-				+ req.getPolicyName());
-		session.save(asp);
+        final ASPolicyBean asp = new ASPolicyBean();
+        asp.setAdjustmentType(req.getAdjustmentType());
+        asp.setCooldown(req.getCooldown());
+        asp.setCreatedDate(new Date());
+        asp.setGrpName(req.getAutoScalingGroupName());
+        asp.setName(req.getPolicyName());
+        asp.setScalingAdjustment(req.getScalingAdjustment());
+        asp.setUserId(ac.getId());
+        asp.setMinAdjustmentStep(req.getMinAdjustmentStep());
+        asp.setArn("arn:autoscaling:policy:" + ac.getId() + ":"
+                + req.getPolicyName());
+        session.save(asp);
 
       final PutScalingPolicyResultMessage.Builder result =
-    		  PutScalingPolicyResultMessage.newBuilder();
+              PutScalingPolicyResultMessage.newBuilder();
 
       result.setPolicyARN(asp.getArn());
       return result.buildPartial();
 
-	}
+    }
 }

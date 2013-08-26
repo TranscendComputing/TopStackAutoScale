@@ -51,37 +51,37 @@ public class TerminateInstanceInAutoScalingGroupWorker extends
     protected TerminateInstanceInAutoScalingGroupResultMessage doWork0(TerminateInstanceInAutoScalingGroupRequestMessage req,
             ServiceRequestContext context) throws Exception {
 
-		final AccountBean account = context.getAccountBean();
-		Session session = getSession();
-		final List<ASGroupBean> gs = ASUtil.readASGroup(session, account.getId());
-		ASGroupBean g = null;
-		for (final ASGroupBean g0 : gs) {
-		    List<InstanceBean> insts = g0.getScaledInstances(session);
-			for (final InstanceBean ib : insts) {
-			    String instanceId = ib.getInstanceId();
-				if (req.getInstanceId().equals(instanceId)) {
-					g = g0;
-					break;
-				}
-			}
-		}
+        final AccountBean account = context.getAccountBean();
+        Session session = getSession();
+        final List<ASGroupBean> gs = ASUtil.readASGroup(session, account.getId());
+        ASGroupBean g = null;
+        for (final ASGroupBean g0 : gs) {
+            List<InstanceBean> insts = g0.getScaledInstances(session);
+            for (final InstanceBean ib : insts) {
+                String instanceId = ib.getInstanceId();
+                if (req.getInstanceId().equals(instanceId)) {
+                    g = g0;
+                    break;
+                }
+            }
+        }
 
-		if (g == null) {
-			throw AutoScaleQueryFaults.groupDoesNotExist();
-		}
-		if (g.getMinSz() == g.getCapacity()
-				&& req.hasShouldDecrementDesiredCapacity()
-				&& req.getShouldDecrementDesiredCapacity()) {
-			throw AutoScaleQueryFaults.cannotReduceCapacity(g.getMinSz());
-		}
-		g.setReduceCapacity(req.getShouldDecrementDesiredCapacity());
+        if (g == null) {
+            throw AutoScaleQueryFaults.groupDoesNotExist();
+        }
+        if (g.getMinSz() == g.getCapacity()
+                && req.hasShouldDecrementDesiredCapacity()
+                && req.getShouldDecrementDesiredCapacity()) {
+            throw AutoScaleQueryFaults.cannotReduceCapacity(g.getMinSz());
+        }
+        g.setReduceCapacity(req.getShouldDecrementDesiredCapacity());
 
-		session.save(g);
-		final TerminateInstanceInAutoScalingGroupResultMessage.Builder result =
-		        TerminateInstanceInAutoScalingGroupResultMessage.newBuilder();
+        session.save(g);
+        final TerminateInstanceInAutoScalingGroupResultMessage.Builder result =
+                TerminateInstanceInAutoScalingGroupResultMessage.newBuilder();
 
        return result.buildPartial();
 
-	}
+    }
 
 }
