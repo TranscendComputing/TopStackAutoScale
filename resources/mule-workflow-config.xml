@@ -3,14 +3,12 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:spring="http://www.springframework.org/schema/beans"
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
-      xmlns:zmq="http://www.mulesoft.org/schema/mule/zeromq"
       xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
       xmlns:protobuf="http://www.mulesoft.org/schema/mule/protobuf"
       xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
       xsi:schemaLocation="http://wPutww.springframework.org/schema/beans
       classpath:org/springframework/beans/factory/xml/spring-beans-3.0.xsd
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-        http://www.mulesoft.org/schema/mule/zeromq http://www.mulesoft.org/schema/mule/zeromq/1.1-SNAPSHOT/mule-zeromq.xsd
         http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
         http://www.mulesoft.org/schema/mule/protobuf http://www.mulesoft.org/schema/mule/protobuf/current/mule-protobuf.xsd
         http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
@@ -32,18 +30,24 @@
     <spring:bean id="muleWorkflow" factory-method="getInstance"
     class="com.msi.tough.workflow.core.MuleWorkflow">
     </spring:bean>
+    <spring:bean id="zmqReturnProcessor" factory-method="getInstance"
+    destroy-method="destroy"
+    class="com.msi.tough.workflow.core.RemoteWorkflowResponder">
+    </spring:bean>
 
-    <zmq:connector name="ZMQ"/>
+    <!-- Global exception strategy; return an error response to requestor -->
+    <custom-exception-strategy name="sendErrorBack" class="com.msi.tough.workflow.core.MuleExceptionStrategy">
+            <outbound-endpoint ref="SystemErrorHandlerIn"/>
+    </custom-exception-strategy>
 
-    <!-- Begin zero MQ versions -->
+    <!-- Global exception strategy; record abnormal termination of async tasks -->
+    <!-- TODO: async error recording -->
 
-    <flow name="DirectToZMQ">
-        <inbound-endpoint ref="DirectToZMQIn"/>
-        <zmq:outbound-endpoint address="tcp://*:${autoscale.port}" socket-operation="connect" exchange-pattern="push"/>
-    </flow>
-
+    <!-- === Zero MQ processing === -->
     <flow name="ZMQEntry">
-        <zmq:inbound-endpoint address="tcp://*:${autoscale.port}" socket-operation="bind" exchange-pattern="pull"/>
+        <inbound-endpoint ref="DirectToZMQEntry"/>
+        <set-session-variable variableName="returnAddress" value="#[payload[1]]"/>
+        <expression-transformer evaluator="groovy" expression="payload[0]"/>
         <first-successful>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateAutoScalingGroupMessage$CreateAutoScalingGroupRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateLaunchConfigurationMessage$CreateLaunchConfigurationRequestMessage"/>
@@ -66,7 +70,6 @@
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.SuspendProcessesMessage$SuspendProcessesRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.TerminateInstanceInAutoScalingGroupMessage$TerminateInstanceInAutoScalingGroupRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.UpdateAutoScalingGroupMessage$UpdateAutoScalingGroupRequestMessage"/>
-            
         </first-successful>
         <log-component />
         <flow-ref name="ActionEntry"/>
@@ -75,6 +78,7 @@
         </catch-exception-strategy>
     </flow>
 
+    <!-- === Standard Action entry point processing === -->
     <flow name="ActionEntry">
         <inbound-endpoint ref="ActionIn"/>
         <log-component />
@@ -156,10 +160,7 @@
         </component>
 
         <flow-ref name="CreateAutoScalingGroupResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="CreateAutoScalingGroupResponse" >
@@ -168,12 +169,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
      <!-- Request/Response flow for CreateLaunchConfiguration -->
      <flow name="CreateLaunchConfigurationRequest">
         <component>
@@ -181,24 +179,18 @@
         </component>
 
         <flow-ref name="CreateLaunchConfigurationResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="CreateLaunchConfigurationResponse" >
         <component>
             <spring-object bean="CreateLaunchConfiguration"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
      <!-- Request/Response flow for DeleteAutoScalingGroup -->
      <flow name="DeleteAutoScalingGroupRequest">
         <component>
@@ -206,25 +198,19 @@
         </component>
 
         <flow-ref name="DeleteAutoScalingGroupResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DeleteAutoScalingGroupResponse" >
         <component>
             <spring-object bean="DeleteAutoScalingGroup"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
+
+
      <!-- Request/Response flow for DeletePolicy -->
      <flow name="DeletePolicyRequest">
         <component>
@@ -232,25 +218,19 @@
         </component>
 
         <flow-ref name="DeletePolicyResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DeletePolicyResponse" >
         <component>
             <spring-object bean="DeletePolicy"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
+
+
    <!-- Request/Response flow for DescribeAdjustmentTypes -->
      <flow name="DescribeAdjustmentTypesRequest">
         <component>
@@ -258,22 +238,16 @@
         </component>
 
         <flow-ref name="DescribeAdjustmentTypesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DescribeAdjustmentTypesResponse" >
         <component>
             <spring-object bean="DescribeAdjustmentTypes"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <!-- Request/Response flow for DescribeAutoScalingGroups -->
@@ -283,26 +257,20 @@
         </component>
 
         <flow-ref name="DescribeAutoScalingGroupsResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DescribeAutoScalingGroupsResponse" >
         <component>
             <spring-object bean="DescribeAutoScalingGroups"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
 
-   
+
     <!-- Request/Response flow for DescribeAutoScalingInstances -->
      <flow name="DescribeAutoScalingInstancesRequest">
         <component>
@@ -310,26 +278,20 @@
         </component>
 
         <flow-ref name="DescribeAutoScalingInstancesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DescribeAutoScalingInstancesResponse" >
         <component>
             <spring-object bean="DescribeAutoScalingInstances"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
-    
+
+
+
    <!-- Request/Response flow for DescribeLaunchConfigurations -->
      <flow name="DescribeLaunchConfigurationsRequest">
         <component>
@@ -337,22 +299,16 @@
         </component>
 
         <flow-ref name="DescribeLaunchConfigurationsResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-     
+
      <flow name="DescribeLaunchConfigurationsResponse" >
         <component>
             <spring-object bean="DescribeLaunchConfigurations"/>
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
 
@@ -364,10 +320,7 @@
         </component>
 
         <flow-ref name="DescribePoliciesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="DescribePoliciesResponse" >
@@ -376,12 +329,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
    <!-- Request/Response flow for DescribeScalingActivities -->
 
     <flow name="DescribeScalingActivitiesRequest">
@@ -390,10 +340,7 @@
         </component>
 
         <flow-ref name="DescribeScalingActivitiesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="DescribeScalingActivitiesResponse" >
@@ -402,14 +349,11 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
-    
+
+
+
    <!-- Request/Response flow for DescribeScalingProcessTypes -->
 
     <flow name="DescribeScalingProcessTypesRequest">
@@ -418,10 +362,7 @@
         </component>
 
         <flow-ref name="DescribeScalingProcessTypesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="DescribeScalingProcessTypesResponse" >
@@ -430,13 +371,10 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
+
+
    <!-- Request/Response flow for DescribeTerminationPolicyTypes -->
 
     <flow name="DescribeTerminationPolicyTypesRequest">
@@ -445,10 +383,7 @@
         </component>
 
         <flow-ref name="DescribeTerminationPolicyTypesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="DescribeTerminationPolicyTypesResponse" >
@@ -457,12 +392,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
     <!-- Request/Response flow for ExecutePolicy -->
 
     <flow name="ExecutePolicyRequest">
@@ -471,10 +403,7 @@
         </component>
 
         <flow-ref name="ExecutePolicyResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="ExecutePolicyResponse" >
@@ -483,12 +412,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
     <!-- Request/Response flow for PutScalingPolicy -->
 
     <flow name="PutScalingPolicyRequest">
@@ -497,10 +423,7 @@
         </component>
 
         <flow-ref name="PutScalingPolicyResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="PutScalingPolicyResponse" >
@@ -509,12 +432,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
    <!-- Request/Response flow for PutScheduledUpdateGroupAction -->
 
     <flow name="PutScheduledUpdateGroupActionRequest">
@@ -523,10 +443,7 @@
         </component>
 
         <flow-ref name="PutScheduledUpdateGroupActionResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="PutScheduledUpdateGroupActionResponse" >
@@ -535,13 +452,10 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-    
+
+
    <!-- Request/Response flow for ResumeProcesses -->
 
     <flow name="ResumeProcessesRequest">
@@ -550,10 +464,7 @@
         </component>
 
         <flow-ref name="ResumeProcessesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="ResumeProcessesResponse" >
@@ -562,13 +473,10 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
-<!-- Request/Response flow for SetDesiredCapacity -->
+
+    <!-- Request/Response flow for SetDesiredCapacity -->
 
     <flow name="SetDesiredCapacityRequest">
         <component>
@@ -576,10 +484,7 @@
         </component>
 
         <flow-ref name="SetDesiredCapacityResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="SetDesiredCapacityResponse" >
@@ -588,12 +493,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
    <!-- Request/Response flow for SetInstanceHealth -->
 
     <flow name="SetInstanceHealthRequest">
@@ -602,10 +504,7 @@
         </component>
 
         <flow-ref name="SetInstanceHealthResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="SetInstanceHealthResponse" >
@@ -614,12 +513,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
     <!-- Request/Response flow for SuspendProcesses -->
 
     <flow name="SuspendProcessesRequest">
@@ -628,10 +524,7 @@
         </component>
 
         <flow-ref name="SuspendProcessesResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="SuspendProcessesResponse" >
@@ -640,10 +533,7 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <!-- Request/Response flow for UpdateAutoScalingGroup -->
@@ -654,10 +544,7 @@
         </component>
 
         <flow-ref name="UpdateAutoScalingGroupResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="UpdateAutoScalingGroupResponse" >
@@ -666,12 +553,9 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
     <!-- Request/Response flow for TerminateInstanceInAutoScalingGroup -->
 
     <flow name="TerminateInstanceInAutoScalingGroupRequest">
@@ -680,10 +564,7 @@
         </component>
 
         <flow-ref name="TerminateInstanceInAutoScalingGroupResponse"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
 
     <flow name="TerminateInstanceInAutoScalingGroupResponse" >
@@ -692,13 +573,15 @@
         </component>
 
         <flow-ref name="ClientResponder"/>
-        <!-- Route unexpected errors to separate error handler -->
-        <catch-exception-strategy>
-            <outbound-endpoint ref="SystemErrorHandlerIn"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="sendErrorBack"/>
     </flow>
-    
+
     <!-- General system flows -->
+
+    <flow name="ZMQResponder">
+        <log-component />
+        <processor ref="zmqReturnProcessor"/>
+    </flow>
 
     <flow name="ClientResponder">
         <component>
@@ -706,20 +589,18 @@
         </component>
     </flow>
 
-    <model>
-        <service name="UserErrorHandler">
-            <inbound>
-                <vm:inbound-endpoint path="userErrorHandler" responseTransformer-refs="ExceptionToString" exchange-pattern="request-response"/>
-            </inbound>
-        </service>
-    </model>
-
     <!-- Handle any unexpected errors. Errors could also be routed elsewhere,
         e.g. into an error file, send via email to a list, stored in a database, etc. -->
     <flow name="SystemErrorHandler">
         <inbound-endpoint ref="SystemErrorHandlerIn"/>
-
-        <flow-ref name="ClientResponder"/>
+        <choice>
+            <when expression="#[org.mule.util.StringUtils.isNotEmpty(sessionVars['returnAddress'])]">
+                <flow-ref name="ZMQResponder"/>
+            </when>
+            <otherwise>
+                <flow-ref name="ClientResponder"/>
+            </otherwise>
+        </choice>
     </flow>
 
 </mule>

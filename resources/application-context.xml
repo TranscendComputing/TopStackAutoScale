@@ -310,6 +310,14 @@
     class="com.msi.tough.workflow.core.MuleWorkflow">
     </bean>
 
+    <bean id="recvEndpoint" class="java.lang.String">
+        <constructor-arg value="tcp://*:${autoscale.port}"/>
+    </bean>
+
+    <bean id="workflowReceiver" init-method="init" destroy-method="destroy"
+    class="com.msi.tough.workflow.core.WorkflowReceiver">
+    </bean>
+
     <bean id="actionHelper" class="com.msi.tough.query.ActionHelper">
     </bean>
 
@@ -355,6 +363,7 @@
         <constructor-arg>
             <list>
                 <ref bean="ProcessAutoScalingTrigger" />
+                <ref bean="ProcessTerminatedInstancesTrigger" />
                 <ref bean="GatherASTrigger" />
             </list>
         </constructor-arg>

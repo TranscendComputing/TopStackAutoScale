@@ -28,6 +28,9 @@
     <vm:endpoint name="DirectToZMQIn" path="directToZMQ"
         exchange-pattern="one-way"/>
 
+    <vm:endpoint name="DirectToZMQEntry" path="directToZMQEntry"
+        exchange-pattern="one-way"/>
+
     <vm:endpoint name="ActionIn" path="action"
         exchange-pattern="one-way"/>
 
