@@ -14,12 +14,16 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.amazonaws.services.autoscaling.AmazonAutoScalingClient;
+import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.AutoScalingInstanceDetails;
 import com.amazonaws.services.autoscaling.model.CreateAutoScalingGroupRequest;
 import com.amazonaws.services.autoscaling.model.CreateLaunchConfigurationRequest;
 import com.amazonaws.services.autoscaling.model.DeleteAutoScalingGroupRequest;
+import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsRequest;
+import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingInstancesRequest;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingInstancesResult;
+import com.amazonaws.services.autoscaling.model.Instance;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.msi.tough.core.Appctx;
 import com.msi.tough.helper.AbstractHelper;
@@ -107,11 +111,11 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
         CreateAutoScalingGroupRequest request = createASGroupRequest(groupName);
         request.withLaunchConfigurationName(groupName);
         try {
-        	autoScaleClientV2.createAutoScalingGroup(request);
+            autoScaleClientV2.createAutoScalingGroup(request);
         }
-    	catch (ErrorResponse e) {
-    		logger.debug("AutoScalingGroup: " + groupName + " cannot be created.");
-    	}
+        catch (ErrorResponse e) {
+            logger.debug("AutoScalingGroup: " + groupName + " cannot be created.");
+        }
         addEntity(groupName);
     }
 
@@ -120,19 +124,26 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
      *
      * @throws InterruptedException
      */
-    public AutoScalingInstanceDetails describeASInstance() throws InterruptedException {
-    	DescribeAutoScalingInstancesRequest request = new DescribeAutoScalingInstancesRequest();
-        AutoScalingInstanceDetails firstInstance = null;
-    	DescribeAutoScalingInstancesResult result;
-
+    public Instance describeASInstance(String groupName) throws InterruptedException {
+        DescribeAutoScalingGroupsRequest request = new DescribeAutoScalingGroupsRequest();
+        Instance firstInstance = null;
+        DescribeAutoScalingGroupsResult result;
+        request.withAutoScalingGroupNames(groupName);
         for (int count = 0; count < MAX_WAIT_SECS; count += WAIT_SECS) {
             try {
-            	result = autoScaleClient.describeAutoScalingInstances(request);
-                firstInstance = result.getAutoScalingInstances().get(0);
-                break;
+                result = autoScaleClient.describeAutoScalingGroups(request);
+                AutoScalingGroup group = result.getAutoScalingGroups().get(0);
+                if (group.getInstances().size() == 0) {
+                    logger.info("No instances in group "+
+                            group.getAutoScalingGroupName() + " yet; waited " +
+                            count + " seconds.");
+                } else {
+                    firstInstance = group.getInstances().get(0);
+                    break;
+                }
             } catch (Exception e) {
                 //No instances created, wait for instance
-            	//logger.info("Waiting for instance to be initialized");
+                //logger.info("Waiting for instance to be initialized");
             }
             Thread.sleep(1000 * WAIT_SECS);
         }
@@ -141,7 +152,8 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
             return firstInstance;
         }
 
-        throw new IndexOutOfBoundsException("No instances created in ASGroup");
+        throw new IndexOutOfBoundsException("No instances created in ASGroup " +
+                groupName);
 
     }
 
@@ -151,9 +163,9 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
      *
      */
     public String getNewInstanceId(String groupName) throws Exception {
-    	createASGroup(groupName);
-    	AutoScalingInstanceDetails instanceInfo = describeASInstance();
-    	return instanceInfo.getInstanceId();
+        createASGroup(groupName);
+        Instance instanceInfo = describeASInstance(groupName);
+        return instanceInfo.getInstanceId();
     }
 
     /**
@@ -169,8 +181,8 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
             logger.debug("Found existing existing AutoScalingGroup: " + groupName);
             try {
                 //An AutoScalingGroup with one instance exists
-            	AutoScalingInstanceDetails instanceInfo = describeASInstance();
-            	return instanceInfo.getInstanceId();
+                Instance instanceInfo = describeASInstance(groupName);
+                return instanceInfo.getInstanceId();
             } catch (ErrorResponse e) {
                 logger.debug("AutoScalingGroup: " + groupName + " not found, create new.");
             }
@@ -188,9 +200,9 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
      *
      */
     private DeleteAutoScalingGroupRequest deleteASGroupRequest(String ASGroupName) {
-    	final DeleteAutoScalingGroupRequest deleteRequest = new DeleteAutoScalingGroupRequest();
-    	deleteRequest.withAutoScalingGroupName(ASGroupName);
-    	return deleteRequest;
+        final DeleteAutoScalingGroupRequest deleteRequest = new DeleteAutoScalingGroupRequest();
+        deleteRequest.withAutoScalingGroupName(ASGroupName);
+        return deleteRequest;
     }
 
     /**
@@ -198,7 +210,7 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
      * @param ASGroupName
      */
     public void deleteASGroup(String ASGroupName) throws Exception {
-    	final DeleteAutoScalingGroupRequest request = deleteASGroupRequest(ASGroupName);
+        final DeleteAutoScalingGroupRequest request = deleteASGroupRequest(ASGroupName);
         autoScaleClientV2.deleteAutoScalingGroup(request);
         removeEntity(ASGroupName);
     }
@@ -216,7 +228,7 @@ public class RunningAutoScalingInstanceHelper extends AbstractHelper<String> {
      */
     @Override
     public void create(String identifier) throws Exception {
-    	getNewInstanceId(identifier);
+        getNewInstanceId(identifier);
     }
 
     /* (non-Javadoc)

@@ -69,7 +69,7 @@ public class DescribeAutoScalingInstancesWorker extends
         }
         if (asgl != null) {
             for (final ASGroupBean asg : asgl) {
-                Collection<InstanceBean> instances = fetchInstances(session, asg);
+                Collection<InstanceBean> instances = asg.getScaledInstances(session);
                 for (final InstanceBean ib : instances) {
                     String i = ib.getInstanceId();
                     if (req.getNextToken() != null
@@ -95,11 +95,11 @@ public class DescribeAutoScalingInstancesWorker extends
                         cnt++;
                         final AutoScalingInstanceDetails.Builder b = AutoScalingInstanceDetails.newBuilder();
                         b.setAutoScalingGroupName(asg.getName());
-                        // b.setAvailabilityZone(availabilityZone);
-                        // b.setHealthStatus(healthStatus);
+                        b.setAvailabilityZone(ib.getAvzone());
+                        b.setHealthStatus(ib.getHealth());
                         b.setInstanceId(i);
                         b.setLaunchConfigurationName(asg.getLaunchConfig());
-                        // b.setLifecycleState(lifecycleState);
+                        b.setLifecycleState(ib.getStatus());
                         autoScalingInstances.add(b.build());
                     }
 

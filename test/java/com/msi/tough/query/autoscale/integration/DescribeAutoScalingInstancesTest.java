@@ -22,8 +22,7 @@ public class DescribeAutoScalingInstancesTest extends AbstractBaseAutoscaleTest 
     private final String baseName = UUID.randomUUID().toString()
             .substring(0, 8);
 
-    String name1 = "cr-asg-1-" + baseName;
-    String name2 = "cr-asg-2-" + baseName;
+    String name1 = "desc-asg-1-" + baseName;
 
     @Autowired
     private AutoScaleGroupHelper asGroupHelper;
@@ -32,27 +31,27 @@ public class DescribeAutoScalingInstancesTest extends AbstractBaseAutoscaleTest 
     @Before
     public void setup(){
         logger.info("Creating AS group "+name1);
-        asGroupHelper.createASGroup(name1);      
-        
+        asGroupHelper.createASGroup(name1);
+
     };
-    
+
     @After
     public void teardown() throws Exception{
         asGroupHelper.deleteAllCreatedASGroups();
     }
-    
 
-    @Test
+
+    @Test()
     public void testDescribeAutoScalingInstancesNoArgs() throws Exception {
         final DescribeAutoScalingInstancesRequest request = new DescribeAutoScalingInstancesRequest();
         getAutoScaleClientV2().describeAutoScalingInstances(request);
     }
-  
-    
+
+
     @Test (expected = AmazonServiceException.class)
     public void testDescribeAutoScalingInstancesInvalidParameters() throws Exception {
         final DescribeAutoScalingInstancesRequest request = new DescribeAutoScalingInstancesRequest();
-		request.withNextToken("invalidToken");
+        request.withNextToken("invalidToken");
         getAutoScaleClientV2().describeAutoScalingInstances(request);
     }
 
