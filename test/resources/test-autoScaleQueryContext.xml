@@ -287,6 +287,10 @@
         <constructor-arg value="${default.availability.zone}"/>
     </bean>
 
+    <bean id="testInstanceType" class="java.lang.String">
+        <constructor-arg value="${default.flavor}"/>
+   </bean>
+
     <bean id="tenant" class="java.lang.String">
         <constructor-arg value="${ec2.owner.id}"/>
     </bean>

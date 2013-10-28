@@ -17,8 +17,8 @@ import com.msi.tough.query.autoscale.helper.LaunchConfigHelper;
 
 
 public class CreateLaunchConfigurationTest extends AbstractBaseAutoscaleTest {
-	
-	
+
+
 	private static Logger logger = Appctx.getLogger(CreateLaunchConfigurationTest.class
             .getName());
 
@@ -30,48 +30,52 @@ public class CreateLaunchConfigurationTest extends AbstractBaseAutoscaleTest {
     @Autowired
     private AutoScaleGroupHelper asGroupHelper;
     @Autowired
-    private LaunchConfigHelper  lcHelper;
+    private LaunchConfigHelper lcHelper;
+    @Autowired
+    private String baseImageId;
+    @Autowired
+    private String testInstanceType;
 
     @Before
     public void setup(){
        // logger.info("Creating AS group "+name1);
        // asGroupHelper.createASGroup(name1);
     }
-    
+
     @After
     public void teardown() throws Exception{
-      
+
         logger.info("Delete all Launch Configurations");
         lcHelper.deleteAllCreatedConfigs();
-        
+
     }
-    
-    
+
+
     @Test(expected = AmazonServiceException.class)
     public void testCreateLaunchConfigurationMissingArgs() throws Exception {
         final CreateLaunchConfigurationRequest request = new CreateLaunchConfigurationRequest();
         getAutoScaleClientV2().createLaunchConfiguration(request);
     }
 
-    
+
     @Test(expected = AmazonServiceException.class)
     public void testCreateLaunchInvalidPolicyName() throws Exception {
     	final CreateLaunchConfigurationRequest request = new CreateLaunchConfigurationRequest();
         request.withLaunchConfigurationName(name1);
         getAutoScaleClientV2().createLaunchConfiguration(request);
     }
-    
-    
+
+
     @Test
     public void testGoodCreate() throws Exception {
         logger.info("Creating Launch Configuration "+name1);
-                
+
         final CreateLaunchConfigurationRequest request = new CreateLaunchConfigurationRequest();
-        request.withImageId("99e24a61-e1fb-49d2-b576-d68bbe5759cc");
-        request.withInstanceType("m1.small.ssd");
+        request.withImageId(baseImageId);
+        request.withInstanceType(testInstanceType);
         request.withLaunchConfigurationName(name1);
         getAutoScaleClientV2().createLaunchConfiguration(request);
-        
+
     }
-    
+
 }
