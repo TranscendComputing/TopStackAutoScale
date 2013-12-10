@@ -54,6 +54,11 @@
       <bean id="DeleteAutoScalingGroupWorker"
         class="com.transcend.autoscale.worker.DeleteAutoScalingGroupWorker"/>
 
+    <bean id="LaunchConfiguration"
+        class="com.transcend.autoscale.actions.LaunchConfiguration"/>
+
+      <bean id="LaunchConfigurationWorker"
+        class="com.transcend.autoscale.worker.LaunchConfigurationWorker"/>
 
     <bean id="DeletePolicy"
         class="com.transcend.autoscale.actions.DeletePolicy"/>
@@ -173,6 +178,7 @@
                 <entry key="CreateAutoScalingGroup" value-ref="CreateAutoScalingGroup"/>
                 <entry key="CreateLaunchConfiguration" value-ref="CreateLaunchConfiguration"/>
                 <entry key="DeleteAutoScalingGroup" value-ref="DeleteAutoScalingGroup"/>
+                <entry key="DeleteLaunchConfiguration" value-ref="DeleteLaunchConfiguration"/>
                 <entry key="DeletePolicy" value-ref="DeletePolicy"/>
                 <entry key="DescribeAdjustmentTypes" value-ref="DescribeAdjustmentTypes"/>
                 <entry key="DescribeAutoScalingGroups" value-ref="DescribeAutoScalingGroups"/>

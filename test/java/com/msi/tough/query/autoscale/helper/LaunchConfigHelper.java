@@ -35,9 +35,6 @@ public class LaunchConfigHelper {
 
     @Autowired(required=true)
     private String defaultAvailabilityZone = null;
-
-    @Autowired
-    private AmazonAutoScalingClient autoScaleClient;
     
     @Autowired
     private AmazonAutoScalingClient autoScaleClientV2;
@@ -102,7 +99,7 @@ public class LaunchConfigHelper {
      */
     public void deleteLaunchConfig(String name) throws Exception {
         DeleteLaunchConfigurationRequest request = deleteLaunchConfigRequest(name);
-        autoScaleClient.deleteLaunchConfiguration(request);
+        autoScaleClientV2.deleteLaunchConfiguration(request);
         configs.remove(name);
     }
 

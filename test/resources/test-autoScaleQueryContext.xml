@@ -18,7 +18,7 @@
 
     <import resource="cloud-config.xml" />
     <!-- inject autoscale util classes (helpers, etc.) -->
-    <context:component-scan base-package="com.msi.tough.query.autoscale" />
+    <context:component-scan base-package="com.msi.tough.query.autoscaled" />
     <!-- inject core action classes (ActionTestHelper, etc.) -->
     <context:component-scan base-package="com.msi.tough.query" />
     <!-- inject project action classes (Describe, etc.) -->
@@ -42,6 +42,12 @@
 
     <bean id="DeleteAutoScalingGroupWorker"
         class="com.transcend.autoscale.worker.DeleteAutoScalingGroupWorker"/>
+
+    <bean id="DeleteLaunchConfiguration"
+        class="com.transcend.autoscale.actions.DeleteLaunchConfiguration"/>
+
+    <bean id="DeleteLaunchConfigurationWorker"
+        class="com.transcend.autoscale.worker.DeleteLaunchConfigurationWorker"/>
 
     <bean id="DeletePolicy"
         class="com.transcend.autoscale.actions.DeletePolicy"/>
@@ -161,6 +167,7 @@
                 <entry key="CreateAutoScalingGroup" value-ref="CreateAutoScalingGroup"/>
                 <entry key="CreateLaunchConfiguration" value-ref="CreateLaunchConfiguration"/>
                 <entry key="DeleteAutoScalingGroup" value-ref="DeleteAutoScalingGroup"/>
+                <entry key="DeleteLaunchConfiguration" value-ref="DeleteLaunchConfiguration"/>
                 <entry key="DeletePolicy" value-ref="DeletePolicy"/>
                 <entry key="DescribeAdjustmentTypes" value-ref="DescribeAdjustmentTypes"/>
                 <entry key="DescribeAutoScalingGroups" value-ref="DescribeAutoScalingGroups"/>

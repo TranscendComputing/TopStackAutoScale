@@ -1,0 +1,18 @@
+package topstack_Autoscale;
+
+option java_package = "com.transcend.autoscale.message";
+option java_outer_classname = "DeleteLaunchConfigurationMessage";
+
+message DeleteLaunchConfigurationRequestMessage {
+    required bool typeId = 242;
+    
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+    required string LaunchConfigurationName = 3;
+}
+
+message DeleteLaunchConfigurationResultMessage {
+    required bool typeId = 243;
+    required string requestId = 1;
+    required string callerAccessKey = 2;
+}

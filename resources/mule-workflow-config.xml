@@ -52,6 +52,7 @@
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateAutoScalingGroupMessage$CreateAutoScalingGroupRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.CreateLaunchConfigurationMessage$CreateLaunchConfigurationRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DeleteAutoScalingGroupMessage$DeleteAutoScalingGroupRequestMessage"/>
+            <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DeleteLaunchConfigurationMessage$DeleteLaunchConfigurationRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DeletePolicyMessage$DeletePolicyRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeAdjustmentTypesMessage$DescribeAdjustmentTypesRequestMessage"/>
             <protobuf:deserialize protobufClass="com.transcend.autoscale.message.DescribeAutoScalingGroupsMessage$DescribeAutoScalingGroupsRequestMessage"/>
@@ -91,6 +92,9 @@
             </when>
             <when expression="payload instanceof com.transcend.autoscale.message.DeleteAutoScalingGroupMessage$DeleteAutoScalingGroupRequestMessage" evaluator="groovy">
                 <flow-ref name="DeleteAutoScalingGroupRequest"/>
+            </when>
+            <when expression="payload instanceof com.transcend.autoscale.message.DeleteLaunchConfigurationMessage$DeleteLaunchConfigurationRequestMessage" evaluator="groovy">
+                <flow-ref name="DeleteLaunchConfigurationRequest"/>
             </when>
             <when expression="payload instanceof com.transcend.autoscale.message.DeletePolicyMessage$DeletePolicyRequestMessage" evaluator="groovy">
                 <flow-ref name="DeletePolicyRequest"/>
@@ -210,6 +214,25 @@
         <exception-strategy ref="sendErrorBack"/>
     </flow>
 
+    <!-- Request/Response flow for DeleteLaunchConfiguration -->
+     <flow name="DeleteLaunchConfigurationRequest">
+        <component>
+            <spring-object bean="DeleteLaunchConfigurationWorker"/>
+        </component>
+
+        <flow-ref name="DeleteLaunchConfigurationResponse"/>
+        <exception-strategy ref="sendErrorBack"/>
+    </flow>
+
+     <flow name="DeleteLaunchConfigurationResponse" >
+        <component>
+            <spring-object bean="DeleteLaunchConfiguration"/>
+        </component>
+
+        <flow-ref name="ClientResponder"/>
+        <exception-strategy ref="sendErrorBack"/>
+    </flow>
+    
 
      <!-- Request/Response flow for DeletePolicy -->
      <flow name="DeletePolicyRequest">
